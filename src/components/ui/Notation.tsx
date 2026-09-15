@@ -67,7 +67,7 @@ export function Notation({
     >
       <span
         aria-hidden
-        className="shrink-0 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--color-blueprint-soft)]"
+        className="shrink-0 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[color:var(--color-accent)]"
       >
         NOTE {String((reduced ? 0 : index) + 1).padStart(2, "0")}
       </span>
@@ -81,13 +81,13 @@ export function Notation({
             <li
               key={e.label}
               className={clsx(
-                "min-w-0 truncate font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-text-secondary)]",
+                "min-w-0 truncate text-[13px] text-[color:var(--color-text-secondary)]",
                 i > 0 && "hidden",
               )}
             >
               {e.label}
               {e.value ? (
-                <span className="readout ml-2 text-[11px] text-[color:var(--color-text)]">{e.value}</span>
+                <span className="readout ml-2 text-[13px] text-[color:var(--color-text)]">{e.value}</span>
               ) : null}
             </li>
           ))}
@@ -96,11 +96,11 @@ export function Notation({
         <p
           key={active.label}
           aria-live="off"
-          className="animate-fadeIn min-w-0 truncate font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-text-secondary)]"
+          className="animate-fadeIn min-w-0 truncate text-[13px] text-[color:var(--color-text-secondary)]"
         >
           {active.label}
           {active.value ? (
-            <span className="readout ml-2 text-[11px] text-[color:var(--color-text)]">{active.value}</span>
+            <span className="readout ml-2 text-[13px] text-[color:var(--color-text)]">{active.value}</span>
           ) : null}
         </p>
       )}

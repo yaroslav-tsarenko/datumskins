@@ -12,7 +12,7 @@ interface EmptyStateProps {
   icon?: React.ReactNode;
 }
 
-/** An unissued sheet, not a shrug: a hatched field, a ruled frame, one way out. */
+/** An empty result, not a shrug: a calm white card, a clear line, one way out. */
 export function EmptyState({
   title,
   subtitle,
@@ -21,19 +21,18 @@ export function EmptyState({
   icon,
 }: EmptyStateProps) {
   return (
-    <div className="relative flex flex-col items-center gap-3 overflow-hidden border border-[color:var(--color-border-strong)] px-4 py-16 text-center">
-      <span aria-hidden className="hatch absolute inset-0 opacity-20" />
-      <span className="relative text-[color:var(--color-blueprint-soft)]">
+    <div className="flex flex-col items-center gap-4 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] px-6 py-20 text-center">
+      <span className="text-[color:var(--color-accent)]">
         {icon || <PackageOpen size={40} strokeWidth={1.5} />}
       </span>
-      <h3 className="drawing-title relative text-[clamp(1.25rem,3vw,1.75rem)]">{title}</h3>
+      <h3 className="drawing-title text-[clamp(1.25rem,3vw,1.6rem)]">{title}</h3>
       {subtitle && (
-        <p className="relative max-w-[40ch] text-[14px] text-[color:var(--color-text-secondary)]">
+        <p className="max-w-[46ch] text-[16px] leading-relaxed text-[color:var(--color-text-secondary)]">
           {subtitle}
         </p>
       )}
       {actionLabel && actionHref && (
-        <Button as={Link} href={actionHref} className="relative mt-2">
+        <Button as={Link} href={actionHref} className="mt-2">
           {actionLabel}
         </Button>
       )}

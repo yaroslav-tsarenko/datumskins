@@ -1,13 +1,19 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
-import { SheetNum, DimLine } from "./Stamp";
+import { SheetNum } from "./Stamp";
 
 /**
- * The drawing label that opens a section: a ruled extent, the sheet number and
- * a wide-tracked label sitting on it, then the title in blueprint ink. The
- * right-hand slot takes the section's own action so heading and action share
- * one baseline instead of stacking into a centred block.
+ * The section head.
+ *
+ * Revision B strips the drawing furniture back to one gesture: a small
+ * blueprint-blue micro-label, the title in charcoal display type, and a short
+ * blue rule beneath it. That rule is the brand thread — the same blue that
+ * marks the active nav tab and draws the icon strokes.
+ *
+ * The sheet number is optional and demoted to muted charcoal; it appears only
+ * where a section genuinely reads as a drawing (the hero, the item page, the
+ * featured band), not above every grid of cards.
  */
 export function SectionHead({
   sheet,
@@ -25,27 +31,29 @@ export function SectionHead({
   title: React.ReactNode;
   lede?: React.ReactNode;
   action?: React.ReactNode;
+  /** The blue rule under the title. On by default — it is the brand thread. */
   rule?: boolean;
   className?: string;
 }) {
   return (
     <div className={twMerge(clsx("w-full", className))}>
-      {rule ? <DimLine /> : null}
-
-      {sheet !== undefined || eyebrow ? (
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1">
-          <SheetNum sheet={sheet} rev={rev} />
+      {eyebrow || sheet !== undefined ? (
+        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1">
           {eyebrow ? <span className="label">{eyebrow}</span> : null}
+          <SheetNum sheet={sheet} rev={rev} />
         </div>
       ) : null}
 
-      <div className="mt-2 flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
-        <h2 className="section-title max-w-[22ch] text-balance">{title}</h2>
+      <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+        <div className="min-w-0">
+          <h2 className="section-title max-w-[22ch] text-balance">{title}</h2>
+          {rule ? <span aria-hidden className="title-rule mt-4" /> : null}
+        </div>
         {action ? <div className="pb-1">{action}</div> : null}
       </div>
 
       {lede ? (
-        <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-[color:var(--color-text-secondary)]">
+        <p className="measure mt-5 text-[16px] leading-relaxed text-[color:var(--color-text-secondary)]">
           {lede}
         </p>
       ) : null}

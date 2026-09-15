@@ -26,13 +26,14 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 /**
- * Datumskins Button — Blueprint Works:
- *   primary  = inspection red, white type  (the buy action — one per sheet)
- *   secondary= blueprint-ink outline       (browse, view, secondary action)
- *   ghost    = quiet inline                (cancel, learn more)
+ * Datumskins Button — Blueprint Works, revision B:
+ *   primary   = inspection red, white type (5.3:1) — the buy action, one per view
+ *   secondary = blueprint-blue outline               — browse, view, compare
+ *   outline   = white with a soft hairline           — neutral tertiary action
+ *   ghost     = quiet inline                         — cancel, learn more
  *
- * Ruled rather than rounded, with a 1px blueprint edge and a 2px paper-lift
- * on hover. Nothing glows and nothing floats.
+ * Softly cornered at 6px, flat fills, a short shadow on hover and a 1px press.
+ * No glow, no gradient, no float.
  */
 export function Button({
   variant = "primary",
@@ -62,32 +63,32 @@ export function Button({
     "transition-[background-color,border-color,color,transform,box-shadow] duration-[var(--dur-base)] " +
     "select-none whitespace-nowrap rounded-[var(--radius-md)] " +
     "disabled:cursor-not-allowed disabled:opacity-50 " +
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-bg)]";
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-bg)]";
 
   const sizes: Record<Size, string> = {
-    sm: isIconOnly ? "h-8 w-8 text-sm" : "h-8 px-3 text-[13px]",
-    md: isIconOnly ? "h-10 w-10 text-sm" : "h-10 px-4 text-sm",
-    lg: isIconOnly ? "h-12 w-12" : "h-12 px-6 text-[15px]",
+    sm: isIconOnly ? "h-9 w-9 text-sm" : "h-9 px-3.5 text-[14px]",
+    md: isIconOnly ? "h-11 w-11 text-sm" : "h-11 px-5 text-[15px]",
+    lg: isIconOnly ? "h-13 w-13" : "h-13 px-7 text-[16px]",
   };
 
   const variants: Record<string, string> = {
     primary:
       "bg-[color:var(--color-primary-strong)] text-[color:var(--color-primary-fg)] border border-[color:var(--color-primary-strong)] " +
-      "hover:bg-[color:var(--color-primary-hover)] hover:shadow-[var(--shadow-md)] active:translate-y-[1px] active:shadow-none",
+      "hover:bg-[color:var(--color-primary-hover)] hover:border-[color:var(--color-primary-hover)] hover:shadow-[var(--shadow-md)] active:translate-y-[1px] active:shadow-none",
     secondary:
       "bg-transparent text-[color:var(--color-accent)] border border-[color:var(--color-accent)] " +
-      "hover:bg-[color:var(--color-accent)] hover:text-[color:var(--color-accent-fg)] active:translate-y-[1px]",
+      "hover:bg-[color:var(--color-accent-tint)] active:translate-y-[1px]",
     outline:
       "bg-[color:var(--color-bg-elevated)] text-[color:var(--color-text)] border border-[color:var(--color-border-strong)] " +
-      "hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)]",
+      "hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)] active:translate-y-[1px]",
     ghost:
       "bg-transparent text-[color:var(--color-text)] border border-transparent hover:bg-[color:var(--color-bg-secondary)]",
     tertiary:
       "bg-transparent text-[color:var(--color-text-secondary)] border border-transparent hover:text-[color:var(--color-accent)]",
     danger:
-      "bg-[color:var(--color-danger)] text-white border border-transparent hover:brightness-95 active:translate-y-[1px]",
+      "bg-[color:var(--color-primary-strong)] text-white border border-transparent hover:bg-[color:var(--color-primary-hover)] active:translate-y-[1px]",
     "danger-soft":
-      "bg-[color:var(--color-danger-light)] text-[color:var(--color-danger)] border border-transparent hover:brightness-95",
+      "bg-[color:var(--color-danger-light)] text-[color:var(--color-danger)] border border-transparent hover:brightness-[0.97]",
   };
 
   const classes = twMerge(

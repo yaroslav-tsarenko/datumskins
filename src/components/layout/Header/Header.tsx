@@ -14,7 +14,7 @@ import {
   Link2,
   Shield,
   Package,
-  CornerDownLeft,
+  ArrowRight,
 } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,49 +22,65 @@ import { DatumskinsLogo } from "../DatumskinsLogo";
 import { CurrencySwitcher } from "./CurrencySwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { Notation } from "@/components/ui/Notation";
+import { Stamp } from "@/components/ui/Stamp";
 import { brand } from "@/lib/brand";
 
-/* Category tabs map onto the real catalogue facets, so every tab lands on a
-   populated grid rather than an empty state. The index letter is the drawing
-   reference, not decoration: A is the full set, B–H are its sections. */
-const TABS: { index: string; label: string; href: string }[] = [
-  { index: "A", label: "All", href: "/store" },
-  { index: "B", label: "Rifles", href: "/store?category=Rifles" },
-  { index: "C", label: "Pistols", href: "/store?category=Pistols" },
-  { index: "D", label: "SMGs", href: "/store?category=SMGs" },
-  { index: "E", label: "Heavy", href: "/store?category=Heavy" },
-  { index: "F", label: "Knives", href: "/store?category=Knives" },
-  { index: "G", label: "Gloves", href: "/store?category=Gloves" },
-  { index: "H", label: "Best value", href: "/store?sort=price_asc" },
-  { index: "J", label: "New", href: "/store?sort=newest" },
+/* Tabs map onto real catalogue facets, so every tab lands on a populated grid
+   rather than an empty state. */
+const TABS: { label: string; href: string }[] = [
+  { label: "All skins", href: "/store" },
+  { label: "Rifles", href: "/store?category=Rifles" },
+  { label: "Pistols", href: "/store?category=Pistols" },
+  { label: "SMGs", href: "/store?category=SMGs" },
+  { label: "Heavy", href: "/store?category=Heavy" },
+  { label: "Knives", href: "/store?category=Knives" },
+  { label: "Gloves", href: "/store?category=Gloves" },
+  { label: "Best value", href: "/store?sort=price_asc" },
+  { label: "New", href: "/store?sort=newest" },
 ];
 
-/* Rarity quick-filters — the colour chips that open the mega-panel. */
-const RARE_LINKS: { label: string; href: string; color: string }[] = [
-  { label: "Mil-Spec", href: "/store?rarity=Mil-Spec%20Grade", color: "var(--rarity-milspec-raw)" },
-  { label: "Restricted", href: "/store?rarity=Restricted", color: "var(--rarity-restricted-raw)" },
-  { label: "Classified", href: "/store?rarity=Classified", color: "var(--rarity-classified-raw)" },
-  { label: "Covert", href: "/store?rarity=Covert", color: "var(--rarity-covert-raw)" },
-  { label: "Extraordinary", href: "/store?rarity=Extraordinary", color: "var(--rarity-gold-raw)" },
-  { label: "Contraband", href: "/store?rarity=Contraband", color: "var(--rarity-contraband-raw)" },
-];
-
-/* The index-lookup rows shown while the field is still empty. Every row is a
-   real catalogue jump — no search history, no invented "trending" terms. */
-const LOOKUP_ROWS: { sheet: string; label: string; href: string }[] = [
-  { sheet: "01", label: "Knives", href: "/store?category=Knives" },
-  { sheet: "02", label: "Gloves", href: "/store?category=Gloves" },
-  { sheet: "03", label: "Covert grade", href: "/store?rarity=Covert" },
-  { sheet: "04", label: "Factory New only", href: "/store?exterior=Factory%20New" },
-  { sheet: "05", label: "Lowest price first", href: "/store?sort=price_asc" },
-  { sheet: "06", label: "Newest listings", href: "/store?sort=newest" },
+/* The mega-panel: a clean white sheet with ordinary link lists. No ruled
+   columns, no drawing furniture — it is navigation, not a diagram. */
+const PANEL_COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
+  {
+    title: "By category",
+    links: [
+      { label: "Rifles", href: "/store?category=Rifles" },
+      { label: "Pistols", href: "/store?category=Pistols" },
+      { label: "SMGs", href: "/store?category=SMGs" },
+      { label: "Heavy", href: "/store?category=Heavy" },
+      { label: "Knives", href: "/store?category=Knives" },
+      { label: "Gloves", href: "/store?category=Gloves" },
+    ],
+  },
+  {
+    title: "By grade",
+    links: [
+      { label: "Mil-Spec", href: "/store?rarity=Mil-Spec%20Grade" },
+      { label: "Restricted", href: "/store?rarity=Restricted" },
+      { label: "Classified", href: "/store?rarity=Classified" },
+      { label: "Covert", href: "/store?rarity=Covert" },
+      { label: "Extraordinary", href: "/store?rarity=Extraordinary" },
+      { label: "Contraband", href: "/store?rarity=Contraband" },
+    ],
+  },
+  {
+    title: "By wear",
+    links: [
+      { label: "Factory New", href: "/store?exterior=FN" },
+      { label: "Minimal Wear", href: "/store?exterior=MW" },
+      { label: "Field-Tested", href: "/store?exterior=FT" },
+      { label: "Well-Worn", href: "/store?exterior=WW" },
+      { label: "Battle-Scarred", href: "/store?exterior=BS" },
+    ],
+  },
 ];
 
 /* The notes strip runs the things the store can actually promise. */
 const NOTES = [
   { label: "Delivered as a Steam trade offer" },
-  { label: "Live stock · live prices" },
-  { label: "Exterior and float range stated on every sheet" },
+  { label: "Live stock, live prices" },
+  { label: "Exterior and float range stated on every listing" },
   { label: "Refunded in full if the trade fails" },
   { label: "Payment handled by the processor, never by us" },
 ];
@@ -77,9 +93,9 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-  const [lookupOpen, setLookupOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const searchWrap = useRef<HTMLDivElement>(null);
+  const panelWrap = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let ticking = false;
@@ -104,18 +120,9 @@ export function Header() {
     };
   }, [mobileOpen]);
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (searchWrap.current && !searchWrap.current.contains(e.target as Node)) setLookupOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
   const submitSearch = (q: string) => {
     const term = q.trim();
     setMobileOpen(false);
-    setLookupOpen(false);
     router.push(term ? `/store?q=${encodeURIComponent(term)}` : "/store");
   };
 
@@ -129,7 +136,6 @@ export function Header() {
     const [path, qs] = href.split("?");
     if (currentPath !== path) return false;
     if (!qs) return true;
-    // Only mark a filtered tab active when its parameter is actually applied.
     if (typeof window === "undefined") return false;
     const current = new URLSearchParams(window.location.search);
     const target = new URLSearchParams(qs);
@@ -137,8 +143,6 @@ export function Header() {
     return true;
   };
 
-  /* The index-lookup field: a ruled cell labelled INDEX, the entry line, and
-     the return key drawn where a draughtsman would write the callout. */
   const searchForm = (variant: "desktop" | "mobile") => (
     <form
       onSubmit={(e) => {
@@ -146,62 +150,28 @@ export function Header() {
         submitSearch(query);
       }}
       role="search"
-      className="well flex h-10 items-stretch overflow-hidden"
+      className="well flex h-11 items-center overflow-hidden pl-3.5"
     >
-      <span
-        aria-hidden
-        className="hidden shrink-0 items-center gap-1.5 border-r border-[color:var(--color-border)] bg-[color:var(--color-bg-secondary)] px-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--color-accent)] sm:inline-flex"
-      >
-        <Search size={12} />
-        Index
-      </span>
+      <Search size={17} className="shrink-0 text-[color:var(--color-accent)]" />
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => setLookupOpen(true)}
         placeholder={
           variant === "desktop"
-            ? "Look up a designation — AWP Dragon Lore, ★ Karambit, AK-47 Redline…"
-            : "Look up a designation"
+            ? "Search a skin — AWP Dragon Lore, ★ Karambit, AK-47 Redline…"
+            : "Search skins"
         }
-        aria-label="Look up a skin designation"
-        className="min-w-0 flex-1 bg-transparent px-3 text-[13.5px] text-[color:var(--color-text)] placeholder:text-[color:var(--color-text-tertiary)] focus:outline-none"
+        aria-label="Search skins"
+        className="min-w-0 flex-1 bg-transparent px-3 text-[15px] text-[color:var(--color-text)] placeholder:text-[color:var(--color-text-tertiary)] focus:outline-none"
       />
       <button
         type="submit"
-        aria-label="Look up"
-        className="inline-flex shrink-0 items-center gap-1.5 bg-[color:var(--color-accent)] px-3.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[color:var(--color-accent-fg)] transition-colors hover:bg-[color:var(--color-accent-hover)]"
+        className="h-11 shrink-0 bg-[color:var(--color-accent)] px-4 text-[14px] font-semibold text-[color:var(--color-accent-fg)] transition-colors hover:bg-[color:var(--color-accent-hover)]"
       >
-        <CornerDownLeft size={12} />
-        <span className="hidden sm:inline">Find</span>
+        Search
       </button>
     </form>
-  );
-
-  /* Ruled index rows — shown while the field is focused and still empty. */
-  const lookupPanel = (
-    <div className="absolute left-0 right-0 top-full z-40 mt-1 border border-[color:var(--color-accent)] bg-[color:var(--color-bg-elevated)] shadow-[var(--shadow-md)]">
-      <div className="flex items-center justify-between border-b border-[color:var(--color-border)] bg-[color:var(--color-accent-tint)] px-3 py-1.5">
-        <span className="label text-[10px]">Index of sections</span>
-        <span className="microlabel">Or type a designation</span>
-      </div>
-      <ul>
-        {LOOKUP_ROWS.map((row) => (
-          <li key={row.href} className="border-b border-[color:var(--color-border)] last:border-b-0">
-            <Link
-              href={row.href}
-              onClick={() => setLookupOpen(false)}
-              className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-2 px-3 py-2 transition-colors hover:bg-[color:var(--color-accent-tint)]"
-            >
-              <span className="index-num text-[11px]">{row.sheet}</span>
-              <span className="truncate text-[13px] text-[color:var(--color-text)]">{row.label}</span>
-              <span aria-hidden className="dim-line w-10 opacity-60" />
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 
   const accountLinks = [
@@ -213,30 +183,30 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-40 w-full" role="banner">
-        {/* ── 1. The vellum notation strip ──────────────────────────── */}
-        <div className="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg-secondary)]">
-          <div className="mx-auto flex h-9 max-w-[1360px] items-center gap-4 px-4 sm:px-6 lg:px-8">
+        {/* 1. The vellum notation strip — a thin divider band, nothing more. */}
+        <div className="vellum-band">
+          <div className="mx-auto flex h-[38px] max-w-[1360px] items-center gap-4 px-5 sm:px-6 lg:px-8">
             <Notation entries={NOTES} className="min-w-0 flex-1" />
             <div className="flex shrink-0 items-center gap-2">
               <CurrencySwitcher />
-              <span className="h-3 w-px bg-[color:var(--color-border)]" aria-hidden />
+              <span className="h-4 w-px bg-[color:var(--color-border)]" aria-hidden />
               <ThemeToggle />
             </div>
           </div>
         </div>
 
-        {/* ── 2. The main bar, on drafting paper ────────────────────── */}
-        <div className="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg)]">
+        {/* 2. The main bar — clean white, no grid. */}
+        <div className="border-b border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
           <div
             className={[
-              "mx-auto flex max-w-[1360px] items-center gap-3 px-4 transition-[padding] duration-[var(--dur-slow)] sm:px-6 lg:gap-6 lg:px-8",
-              scrolled ? "py-2" : "py-3",
+              "mx-auto flex max-w-[1360px] items-center gap-4 px-5 transition-[padding] duration-[var(--dur-slow)] sm:px-6 lg:gap-7 lg:px-8",
+              scrolled ? "py-2.5" : "py-3.5",
             ].join(" ")}
           >
             <button
               onClick={() => setMobileOpen(true)}
               aria-label="Open menu"
-              className="focus-amber inline-flex h-10 w-10 shrink-0 items-center justify-center border border-transparent text-[color:var(--color-accent)] hover:border-[color:var(--color-border)] lg:hidden"
+              className="focus-amber inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] text-[color:var(--color-text)] hover:bg-[color:var(--color-bg-secondary)] lg:hidden"
             >
               <Menu size={22} />
             </button>
@@ -245,18 +215,15 @@ export function Header() {
               <DatumskinsLogo size={scrolled ? 19 : 22} />
             </Link>
 
-            <div ref={searchWrap} className="relative hidden min-w-0 flex-1 lg:block">
-              {searchForm("desktop")}
-              {lookupOpen && !query.trim() ? lookupPanel : null}
-            </div>
+            <div className="hidden min-w-0 flex-1 lg:block">{searchForm("desktop")}</div>
 
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
               {!user ? (
                 <Link
                   href={authHref}
-                  className="focus-amber inline-flex h-10 items-center gap-2 border border-[color:var(--color-accent)] bg-[color:var(--color-accent)] px-4 text-[13px] font-semibold text-[color:var(--color-accent-fg)] transition-colors hover:bg-[color:var(--color-accent-hover)]"
+                  className="focus-amber inline-flex h-11 items-center gap-2 rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] px-4 text-[15px] font-semibold text-[color:var(--color-text)] transition-colors hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)]"
                 >
-                  <UserIcon size={15} />
+                  <UserIcon size={16} className="text-[color:var(--color-accent)]" />
                   <span>Sign in</span>
                 </Link>
               ) : (
@@ -270,19 +237,19 @@ export function Header() {
                     onClick={() => setAccountOpen((v) => !v)}
                     aria-haspopup="menu"
                     aria-expanded={accountOpen}
-                    className="focus-amber inline-flex h-10 items-center gap-2 border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] py-1 pl-1 pr-2.5 transition-colors hover:border-[color:var(--color-accent)]"
+                    className="focus-amber inline-flex h-11 items-center gap-2 rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] py-1 pl-1 pr-3 transition-colors hover:border-[color:var(--color-accent)]"
                   >
-                    <span className="relative inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden bg-[color:var(--color-accent-tint)] text-[color:var(--color-accent)]">
+                    <span className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-sm)] bg-[color:var(--color-accent-tint)] text-[color:var(--color-accent)]">
                       {avatar ? (
-                        <Image src={avatar} alt="" fill sizes="32px" className="object-cover" />
+                        <Image src={avatar} alt="" fill sizes="36px" className="object-cover" />
                       ) : (
-                        <UserIcon size={16} />
+                        <UserIcon size={17} />
                       )}
                     </span>
-                    <span className="hidden max-w-[120px] truncate text-[13px] font-semibold text-[color:var(--color-text)] sm:inline">
+                    <span className="hidden max-w-[120px] truncate text-[14px] font-medium text-[color:var(--color-text)] sm:inline">
                       {displayName}
                     </span>
-                    <ChevronDown size={14} className="hidden text-[color:var(--color-text-tertiary)] sm:inline" />
+                    <ChevronDown size={15} className="hidden text-[color:var(--color-text-tertiary)] sm:inline" />
                   </button>
                   <AnimatePresence>
                     {accountOpen && (
@@ -290,24 +257,24 @@ export function Header() {
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 4 }}
-                        transition={{ duration: 0.14 }}
+                        transition={{ duration: 0.16 }}
                         role="menu"
-                        className="absolute right-0 top-full z-40 mt-1.5 w-64 overflow-hidden border border-[color:var(--color-accent)] bg-[color:var(--color-bg-elevated)] p-2 shadow-[var(--shadow-lg)]"
+                        className="absolute right-0 top-full z-40 mt-2 w-72 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-2 shadow-[var(--shadow-lg)]"
                       >
-                        <div className="mb-2 flex items-center gap-3 border border-[color:var(--color-border)] bg-[color:var(--color-bg-secondary)] p-3">
-                          <span className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden bg-[color:var(--color-accent-tint)] text-[color:var(--color-accent)]">
+                        <div className="mb-2 flex items-center gap-3 rounded-[var(--radius-md)] bg-[color:var(--color-bg-secondary)] p-3">
+                          <span className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-sm)] bg-[color:var(--color-accent-tint)] text-[color:var(--color-accent)]">
                             {avatar ? (
-                              <Image src={avatar} alt="" fill sizes="40px" className="object-cover" />
+                              <Image src={avatar} alt="" fill sizes="44px" className="object-cover" />
                             ) : (
-                              <UserIcon size={18} />
+                              <UserIcon size={19} />
                             )}
                           </span>
                           <span className="min-w-0">
-                            <span className="block truncate text-sm font-semibold text-[color:var(--color-text)]">
+                            <span className="block truncate text-[15px] font-semibold text-[color:var(--color-text)]">
                               {displayName}
                             </span>
                             <span
-                              className={`microlabel block ${
+                              className={`block text-[13px] ${
                                 user.steam?.tradeUrlVerified
                                   ? "text-[color:var(--color-success)]"
                                   : "text-[color:var(--color-warning)]"
@@ -323,9 +290,9 @@ export function Header() {
                             href={item.href}
                             role="menuitem"
                             onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-accent-tint)]"
+                            className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-[15px] text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-bg-secondary)]"
                           >
-                            <item.icon size={15} className="text-[color:var(--color-accent)]" />
+                            <item.icon size={16} className="text-[color:var(--color-accent)]" />
                             {item.label}
                           </Link>
                         ))}
@@ -334,9 +301,9 @@ export function Header() {
                             href="/admin"
                             role="menuitem"
                             onClick={() => setAccountOpen(false)}
-                            className="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-accent-tint)]"
+                            className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-[15px] text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-bg-secondary)]"
                           >
-                            <Shield size={15} className="text-[color:var(--color-accent)]" />
+                            <Shield size={16} className="text-[color:var(--color-accent)]" />
                             Admin panel
                           </NextLink>
                         )}
@@ -348,9 +315,9 @@ export function Header() {
                             signOut();
                           }}
                           role="menuitem"
-                          className="flex w-full items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-danger-light)] hover:text-[color:var(--color-danger)]"
+                          className="flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-[15px] text-[color:var(--color-text)] transition-colors hover:bg-[color:var(--color-danger-light)] hover:text-[color:var(--color-danger)]"
                         >
-                          <LogOut size={15} />
+                          <LogOut size={16} />
                           Sign out
                         </button>
                       </motion.div>
@@ -361,10 +328,28 @@ export function Header() {
             </div>
           </div>
 
-          {/* ── 3. The sheet index — sections A through J ─────────────── */}
-          <div className="hidden border-t border-[color:var(--color-border)] lg:block">
-            <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
-              <nav className="flex items-center gap-5 overflow-x-auto" aria-label="Primary">
+          {/* 3. Tabs — charcoal, with the blue double-rule only on the active one. */}
+          <div
+            ref={panelWrap}
+            className="relative hidden border-t border-[color:var(--color-border)] lg:block"
+            onMouseLeave={() => setPanelOpen(false)}
+          >
+            <div className="mx-auto max-w-[1360px] px-5 sm:px-6 lg:px-8">
+              <nav className="flex items-center gap-7 overflow-x-auto" aria-label="Primary">
+                <button
+                  type="button"
+                  onMouseEnter={() => setPanelOpen(true)}
+                  onClick={() => setPanelOpen((v) => !v)}
+                  aria-expanded={panelOpen}
+                  className="focus-amber -mb-px flex shrink-0 items-center gap-1.5 border-b-2 border-transparent py-3 text-[14px] font-medium text-[color:var(--color-text)] transition-colors hover:text-[color:var(--color-accent)]"
+                >
+                  Browse
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform ${panelOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+
                 {TABS.map((t) => {
                   const active = tabActive(t.href);
                   return (
@@ -372,151 +357,180 @@ export function Header() {
                       key={t.href}
                       href={t.href}
                       aria-current={active ? "page" : undefined}
+                      onMouseEnter={() => setPanelOpen(false)}
                       className={[
-                        "group -mb-px flex shrink-0 items-center gap-1.5 border-b-2 py-2.5 transition-colors",
+                        "-mb-px shrink-0 py-3 text-[14px] transition-colors",
                         active
-                          ? "border-[color:var(--color-primary)]"
-                          : "border-transparent hover:border-[color:var(--color-border-strong)]",
+                          ? "border-b-2 border-[color:var(--color-accent)] font-semibold text-[color:var(--color-text)] shadow-[inset_0_-5px_0_-3px_var(--color-accent)]"
+                          : "border-b-2 border-transparent font-medium text-[color:var(--color-text-secondary)] hover:text-[color:var(--color-text)]",
                       ].join(" ")}
                     >
-                      <span
-                        aria-hidden
-                        className={[
-                          "inline-flex h-[15px] w-[15px] items-center justify-center border font-mono text-[9px] font-semibold leading-none",
-                          active
-                            ? "border-[color:var(--color-primary)] text-[color:var(--color-primary)]"
-                            : "border-[color:var(--color-border)] text-[color:var(--color-text-tertiary)] group-hover:border-[color:var(--color-accent)] group-hover:text-[color:var(--color-accent)]",
-                        ].join(" ")}
-                      >
-                        {t.index}
-                      </span>
-                      <span
-                        className={[
-                          "font-mono text-[11px] font-semibold uppercase tracking-[0.16em]",
-                          active
-                            ? "text-[color:var(--color-text)]"
-                            : "text-[color:var(--color-text-secondary)] group-hover:text-[color:var(--color-accent)]",
-                        ].join(" ")}
-                      >
-                        {t.label}
-                      </span>
+                      {t.label}
                     </Link>
                   );
                 })}
               </nav>
             </div>
+
+            {/* The mega-panel: a clean white sheet, plain link lists, one tile. */}
+            <AnimatePresence>
+              {panelOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
+                  className="absolute inset-x-0 top-full z-40 border-b border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] shadow-[var(--shadow-lg)]"
+                >
+                  <div className="mx-auto grid max-w-[1360px] gap-10 px-8 py-9 lg:grid-cols-[repeat(3,minmax(0,1fr))_20rem]">
+                    {PANEL_COLUMNS.map((col) => (
+                      <div key={col.title}>
+                        <p className="label mb-4">{col.title}</p>
+                        <ul className="flex flex-col gap-2.5">
+                          {col.links.map((l) => (
+                            <li key={l.href}>
+                              <Link
+                                href={l.href}
+                                onClick={() => setPanelOpen(false)}
+                                className="text-[15px] text-[color:var(--color-text-secondary)] transition-colors hover:text-[color:var(--color-accent)]"
+                              >
+                                {l.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+
+                    <Link
+                      href="/store?sort=newest"
+                      onClick={() => setPanelOpen(false)}
+                      className="card-lift flex flex-col justify-between rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[color:var(--color-bg-secondary)] p-5"
+                    >
+                      <Stamp tone="ink" tilt="right" className="self-start">
+                        New arrivals
+                      </Stamp>
+                      <span>
+                        <span className="font-display mt-6 block text-[19px] font-semibold tracking-[-0.015em] text-[color:var(--color-text)]">
+                          Just listed
+                        </span>
+                        <span className="mt-1.5 block text-[14px] text-[color:var(--color-text-secondary)]">
+                          Everything added in the last sync, newest first.
+                        </span>
+                        <span className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[color:var(--color-accent)]">
+                          Open <ArrowRight size={14} />
+                        </span>
+                      </span>
+                    </Link>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          {/* Lookup — mobile row */}
-          <div className="border-t border-[color:var(--color-border)] px-4 py-2 lg:hidden">
+          {/* Search — mobile row */}
+          <div className="border-t border-[color:var(--color-border)] px-5 py-2.5 lg:hidden">
             {searchForm("mobile")}
           </div>
         </div>
       </header>
 
-      {/* ── Mobile drawer ──────────────────────────────────────────── */}
+      {/* Mobile drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <>
             <motion.div
-              className="fixed inset-0 z-50 bg-[#122448]/70 lg:hidden"
+              className="fixed inset-0 z-50 bg-[#22262E]/50 lg:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.aside
-              className="fixed inset-y-0 left-0 z-50 flex w-[88%] max-w-sm flex-col border-r border-[color:var(--color-accent)] bg-[color:var(--color-bg)] lg:hidden"
+              className="fixed inset-y-0 left-0 z-50 flex w-[88%] max-w-sm flex-col bg-[color:var(--color-bg-elevated)] lg:hidden"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 32, stiffness: 340 }}
+              transition={{ type: "tween", duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="flex items-center justify-between border-b border-[color:var(--color-border)] bg-[color:var(--color-bg-secondary)] px-5 py-4">
+              <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-5 py-4">
                 <DatumskinsLogo size={19} />
                 <button
                   onClick={() => setMobileOpen(false)}
                   aria-label="Close menu"
-                  className="focus-amber inline-flex h-9 w-9 items-center justify-center border border-[color:var(--color-border)] text-[color:var(--color-text-secondary)] hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)]"
+                  className="focus-amber inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] text-[color:var(--color-text-secondary)] hover:bg-[color:var(--color-bg-secondary)]"
                 >
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
 
-              <nav className="flex-1 overflow-y-auto" aria-label="Mobile">
-                <ul>
+              <nav className="flex-1 overflow-y-auto px-2 py-3" aria-label="Mobile">
+                <ul className="flex flex-col">
                   {TABS.map((t) => (
-                    <li key={t.href} className="border-b border-[color:var(--color-border)]">
+                    <li key={t.href}>
                       <Link
                         href={t.href}
                         onClick={() => setMobileOpen(false)}
-                        className="flex items-center gap-3 px-5 py-3.5 hover:bg-[color:var(--color-accent-tint)]"
+                        className="block rounded-[var(--radius-md)] px-3 py-3 text-[17px] font-medium text-[color:var(--color-text)] hover:bg-[color:var(--color-bg-secondary)]"
                       >
-                        <span
-                          aria-hidden
-                          className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center border border-[color:var(--color-border)] font-mono text-[10px] font-semibold text-[color:var(--color-text-tertiary)]"
-                        >
-                          {t.index}
-                        </span>
-                        <span className="font-display text-[17px] font-semibold text-[color:var(--color-accent)]">
-                          {t.label}
-                        </span>
+                        {t.label}
                       </Link>
                     </li>
                   ))}
                 </ul>
 
-                <div className="px-5 pt-5">
-                  <span className="label text-[10px]">By rarity</span>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {RARE_LINKS.map((r) => (
+                <p className="label mb-3 mt-6 px-3">By wear</p>
+                <ul className="flex flex-col">
+                  {PANEL_COLUMNS[2].links.map((l) => (
+                    <li key={l.href}>
                       <Link
-                        key={r.label}
-                        href={r.href}
+                        href={l.href}
                         onClick={() => setMobileOpen(false)}
-                        className="inline-flex items-center gap-1.5 border border-[color:var(--color-border)] px-2 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-text)]"
+                        className="block rounded-[var(--radius-md)] px-3 py-2.5 text-[15px] text-[color:var(--color-text-secondary)] hover:bg-[color:var(--color-bg-secondary)]"
                       >
-                        <span className="h-2 w-2" style={{ background: r.color }} />
-                        {r.label}
+                        {l.label}
                       </Link>
-                    ))}
-                  </div>
-                </div>
+                    </li>
+                  ))}
+                </ul>
 
                 {user && (
-                  <ul className="mt-5 border-t border-[color:var(--color-border)]">
-                    {accountLinks.map((item) => (
-                      <li key={item.href} className="border-b border-[color:var(--color-border)]">
-                        <Link
-                          href={item.href}
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-3 px-5 py-3 text-[15px] font-medium text-[color:var(--color-text)] hover:bg-[color:var(--color-bg-secondary)]"
-                        >
-                          <item.icon size={17} className="text-[color:var(--color-accent)]" />
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
-                    {isAdmin && (
-                      <li className="border-b border-[color:var(--color-border)]">
-                        <NextLink
-                          href="/admin"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-3 px-5 py-3 text-[15px] font-medium text-[color:var(--color-text)] hover:bg-[color:var(--color-bg-secondary)]"
-                        >
-                          <Shield size={17} className="text-[color:var(--color-accent)]" />
-                          Admin panel
-                        </NextLink>
-                      </li>
-                    )}
-                  </ul>
+                  <>
+                    <p className="label mb-3 mt-6 px-3">Account</p>
+                    <ul className="flex flex-col">
+                      {accountLinks.map((item) => (
+                        <li key={item.href}>
+                          <Link
+                            href={item.href}
+                            onClick={() => setMobileOpen(false)}
+                            className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-[15px] text-[color:var(--color-text)] hover:bg-[color:var(--color-bg-secondary)]"
+                          >
+                            <item.icon size={17} className="text-[color:var(--color-accent)]" />
+                            {item.label}
+                          </Link>
+                        </li>
+                      ))}
+                      {isAdmin && (
+                        <li>
+                          <NextLink
+                            href="/admin"
+                            onClick={() => setMobileOpen(false)}
+                            className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-[15px] text-[color:var(--color-text)] hover:bg-[color:var(--color-bg-secondary)]"
+                          >
+                            <Shield size={17} className="text-[color:var(--color-accent)]" />
+                            Admin panel
+                          </NextLink>
+                        </li>
+                      )}
+                    </ul>
+                  </>
                 )}
               </nav>
 
-              <div className="border-t border-[color:var(--color-border)] bg-[color:var(--color-bg-secondary)] px-5 py-4">
-                <div className="mb-3 flex items-center gap-2">
+              <div className="border-t border-[color:var(--color-border)] px-5 py-4">
+                <div className="mb-3 flex items-center gap-3">
                   <ThemeToggle />
-                  <span className="h-4 w-px bg-[color:var(--color-border)]" />
+                  <span className="h-5 w-px bg-[color:var(--color-border)]" />
                   <CurrencySwitcher />
                 </div>
                 {user ? (
@@ -526,17 +540,17 @@ export function Header() {
                       setMobileOpen(false);
                       signOut();
                     }}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 border border-[color:var(--color-accent)] text-sm font-semibold text-[color:var(--color-accent)]"
+                    className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] text-[15px] font-semibold text-[color:var(--color-text)]"
                   >
-                    <LogOut size={16} /> Sign out
+                    <LogOut size={17} /> Sign out
                   </button>
                 ) : (
                   <Link
                     href={authHref}
                     onClick={() => setMobileOpen(false)}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 bg-[color:var(--color-accent)] text-sm font-semibold text-[color:var(--color-accent-fg)]"
+                    className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[color:var(--color-accent)] text-[15px] font-semibold text-[color:var(--color-accent-fg)]"
                   >
-                    <UserIcon size={16} /> Sign in
+                    <UserIcon size={17} /> Sign in
                   </Link>
                 )}
               </div>

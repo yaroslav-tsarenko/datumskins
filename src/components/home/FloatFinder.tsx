@@ -53,17 +53,17 @@ export function FloatFinder({ className }: { className?: string }) {
 
   return (
     <div
-      className={`sheet sheet-featured bg-[color:var(--color-bg-elevated)] p-5 sm:p-6 ${className ?? ""}`}
+      className={`sheet p-6 sm:p-8 ${className ?? ""}`}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <span className="label text-[10px]">Wear gauge</span>
-        <span className="readout text-[13px] font-semibold text-[color:var(--color-primary)]">
+        <span className="label">Wear gauge</span>
+        <span className="readout text-[17px] font-semibold text-[color:var(--color-text)]">
           {pos.toFixed(4)}
         </span>
       </div>
 
       {/* The drawing reads the pointer; the pointer is the control. */}
-      <WearDiagram exterior={band.code} value={pos} labels={false} className="mt-4" />
+      <WearDiagram exterior={band.code} value={pos} labels={false} className="mt-5" />
 
       <div className="mt-3">
         <label htmlFor="float-finder" className="sr-only">
@@ -87,10 +87,10 @@ export function FloatFinder({ className }: { className?: string }) {
               type="button"
               onClick={() => setPos((e.floatMin + e.floatMax) / 2)}
               className={[
-                "font-mono text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors",
+                "focus-amber rounded-[var(--radius-sm)] px-2 py-1 font-mono text-[12px] uppercase tracking-[0.1em] transition-colors",
                 e.code === band.code
-                  ? "text-[color:var(--color-accent)]"
-                  : "text-[color:var(--color-text-tertiary)] hover:text-[color:var(--color-accent)]",
+                  ? "font-semibold text-[color:var(--color-text)]"
+                  : "font-medium text-[color:var(--color-text-tertiary)] hover:text-[color:var(--color-text)]",
               ].join(" ")}
             >
               {e.short}
@@ -100,19 +100,19 @@ export function FloatFinder({ className }: { className?: string }) {
       </div>
 
       {/* The readout, ruled off like a title block */}
-      <div className="mt-6 grid grid-cols-2 items-end gap-4 border-t border-[color:var(--color-accent)] pt-5">
+      <div className="mt-8 grid grid-cols-2 items-end gap-4 border-t border-[color:var(--color-border)] pt-6">
         <div>
-          <span className="microlabel block">Zone</span>
-          <p className="drawing-title mt-1 text-[clamp(1.4rem,3.6vw,2rem)]">{band.label}</p>
-          <p className="readout mt-1 text-[11px] text-[color:var(--color-text-secondary)]">
+          <span className="label block">Zone</span>
+          <p className="drawing-title mt-2 text-[clamp(1.4rem,3.4vw,1.9rem)]">{band.label}</p>
+          <p className="readout mt-1.5 text-[14px] text-[color:var(--color-text-secondary)]">
             {band.floatMin.toFixed(2)} – {band.floatMax.toFixed(2)}
           </p>
         </div>
 
         <div className="text-right">
-          <span className="microlabel block">In stock</span>
+          <span className="label block">In stock</span>
           <p
-            className="readout mt-1 text-[clamp(1.4rem,3.6vw,2rem)] font-semibold leading-none text-[color:var(--color-text)]"
+            className="readout mt-2 text-[clamp(1.4rem,3.4vw,1.9rem)] font-semibold leading-none text-[color:var(--color-text)]"
             aria-live="polite"
           >
             {loading && count == null ? "—" : count != null ? count.toLocaleString() : "—"}
@@ -122,7 +122,7 @@ export function FloatFinder({ className }: { className?: string }) {
 
       <Link
         href={`/store?exterior=${band.code}`}
-        className="focus-amber mt-5 inline-flex h-11 w-full items-center justify-center gap-2 bg-[color:var(--color-primary-strong)] text-sm font-semibold text-[color:var(--color-primary-fg)] transition-colors hover:bg-[color:var(--color-primary-hover)]"
+        className="focus-amber mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[color:var(--color-primary-strong)] text-[15px] font-semibold text-[color:var(--color-primary-fg)] transition-colors hover:bg-[color:var(--color-primary-hover)]"
       >
         Show {band.short} skins <ArrowRight size={15} />
       </Link>

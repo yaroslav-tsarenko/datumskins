@@ -12,12 +12,15 @@ const tones: Record<Tone, string> = {
 };
 
 /**
- * The inspection stamp — a rubber stamp pressed onto the sheet.
+ * The inspection stamp.
  *
- * Double-ruled, wide-tracked, rotated a few degrees off true so it reads as
- * applied by hand rather than printed with the drawing. Rationed: a sheet
- * carries at most two, and only when they are literally true ("−24%",
- * "HOLD: TRADE-LOCK", "PASSED QC").
+ * Revision B keeps the charm and drops the noise: a solid fill at one fixed,
+ * comfortable size (12px mono, 600) with white type, tilted 2.5 degrees so it
+ * still reads as applied by hand. The distressed double edge is gone — it
+ * shimmered at small sizes and never rendered cleanly on a scaled display.
+ *
+ * Rationed hard: **one stamp per card, maximum**, and only when it is
+ * literally true ("−24%", "NEW ARRIVAL", "PASSED QC").
  */
 export function Stamp({
   children,
@@ -30,7 +33,7 @@ export function Stamp({
   children: React.ReactNode;
   tone?: Tone;
   tilt?: "left" | "right" | "none";
-  /** Plays the press-down animation once on mount. */
+  /** Plays the press-down once on mount. Reserved for CTAs and the hero. */
   press?: boolean;
   className?: string;
 } & React.HTMLAttributes<HTMLSpanElement>) {
@@ -54,8 +57,9 @@ export function Stamp({
 }
 
 /**
- * A spec tag — the quiet annotation label. Square, mono, wide-tracked; used
- * for exteriors, categories and any value that belongs beside a drawing.
+ * A spec tag — the quiet annotation label for exteriors, phases and flags.
+ * Tinted background, dark ink, 12px mono: it states a fact without competing
+ * with the stamp for attention.
  */
 export function SpecTag({
   children,
@@ -68,7 +72,7 @@ export function SpecTag({
   className?: string;
   style?: React.CSSProperties;
 }) {
-  const tones: Record<string, string> = {
+  const toneClasses: Record<string, string> = {
     default: "bg-[color:var(--color-bg-secondary)] text-[color:var(--color-text-secondary)]",
     ink: "bg-[color:var(--color-accent-tint)] text-[color:var(--color-accent)]",
     inspection: "bg-[color:var(--color-primary-tint)] text-[color:var(--color-danger)]",
@@ -80,8 +84,9 @@ export function SpecTag({
       style={style}
       className={twMerge(
         clsx(
-          "inline-flex items-center gap-1 px-1.5 py-1 font-mono text-[10px] font-semibold uppercase leading-none tracking-[0.16em]",
-          tones[tone],
+          "inline-flex items-center gap-1 rounded-[var(--radius-sm)] px-2 py-1",
+          "font-mono text-[12px] font-medium uppercase leading-none tracking-[0.1em]",
+          toneClasses[tone],
           className,
         ),
       )}
@@ -92,8 +97,8 @@ export function SpecTag({
 }
 
 /**
- * Sheet furniture: the drawing number. "SHT 04" / "REV B" — the kind of label
- * that sits in the corner of a technical drawing and tells you where you are.
+ * Sheet furniture: the drawing reference. Kept, but demoted — muted charcoal
+ * rather than blue, so it sits behind the content instead of beside it.
  */
 export function SheetNum({
   sheet,
@@ -110,7 +115,7 @@ export function SheetNum({
       aria-hidden
       className={twMerge(
         clsx(
-          "inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--color-blueprint-soft)]",
+          "inline-flex items-center gap-2 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[color:var(--color-text-tertiary)]",
           className,
         ),
       )}
@@ -125,11 +130,11 @@ export function SheetNum({
 }
 
 /**
- * A word under dimension — the marker move of this identity.
+ * A word under dimension — the marker move.
  *
- * A louder brand would put a highlighter plate behind the word; a drawing
- * measures it instead: inspection-red type with a ticked extent ruled beneath.
- * Used once per heading, never twice.
+ * The word itself stays charcoal so no reading text is ever coloured; only the
+ * ticked rule beneath it is blueprint blue. Used once per heading, never twice,
+ * and never on a full line of copy.
  */
 export function Dimmed({
   children,
@@ -138,12 +143,10 @@ export function Dimmed({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <span className={twMerge(clsx("dim-word inline-block", className))}>{children}</span>
-  );
+  return <span className={twMerge(clsx("dim-word inline-block", className))}>{children}</span>;
 }
 
-/** A dimension line with tick ends — the ruled extent under a heading. */
+/** A dimension line with tick ends. Hero and section heads only. */
 export function DimLine({ className }: { className?: string }) {
   return <span aria-hidden className={twMerge(clsx("dim-line block w-full", className))} />;
 }

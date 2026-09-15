@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { SlidersHorizontal, X, Search } from "lucide-react";
+import { SlidersHorizontal, X, Search, LayoutGrid, Rows3 } from "lucide-react";
 import { EXTERIORS, RARITY_TIERS, type ExteriorCode } from "@/lib/skins/shared";
 import type { SihCatalogItem, SihCatalogResult, SihFacets } from "@/lib/sih/queries";
 import { SihItemCard, SihItemCardSkeleton } from "./SihItemCard";
 import { WearDiagram } from "@/components/ui/WearDiagram";
-import { DimLine } from "@/components/ui/Stamp";
+import { SihPartsTable } from "./SihPartsTable";
 import { useCurrency } from "@/providers/CurrencyProvider";
 
 const SORTS = [
@@ -31,9 +31,13 @@ function useDebounced<T>(value: T, delay = 350): T {
 }
 
 /**
- * The index of sheets. A persistent specification rail on the left, the sheet
- * grid on the right, and every constraint mirrored into the URL so a view can
- * be shared or linked from the header index.
+ * The catalogue.
+ *
+ * A persistent filter rail on the left, results on the right, and every
+ * constraint mirrored into the URL so a view can be shared or linked from the
+ * header. The card grid is the default; the parts-list table is a power-user
+ * toggle that remembers itself for the session and collapses to stacked cards
+ * on a phone.
  */
 export function SihCatalogClient({ facets }: { facets: SihFacets }) {
   const router = useRouter();
@@ -66,6 +70,27 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
   const [souvenir, setSouvenir] = useState(params.get("souvenir") === "1");
   const [sort, setSort] = useState(params.get("sort") ?? "price_asc");
   const [mobileOpen, setMobileOpen] = useState(false);
+  // The card grid is the default view; the parts list is opt-in and remembered
+  // for the session only, so a shared URL always opens on the calm grid.
+  const [view, setView] = useState<"grid" | "list">("grid");
+
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem("catalog-view");
+      if (stored === "list" || stored === "grid") setView(stored);
+    } catch {
+      /* private mode, or storage blocked — the default view is fine */
+    }
+  }, []);
+
+  const chooseView = (next: "grid" | "list") => {
+    setView(next);
+    try {
+      sessionStorage.setItem("catalog-view", next);
+    } catch {
+      /* nothing to do — the choice just will not persist */
+    }
+  };
 
   const [data, setData] = useState<SihCatalogResult | null>(null);
   const [items, setItems] = useState<SihCatalogItem[]>([]);
@@ -221,15 +246,15 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
   }, [facets.weapons]);
 
   const sidebar = (
-    <div className="flex flex-col gap-6">
-      <div className="well flex h-10 items-center px-3">
-        <Search className="h-4 w-4 shrink-0 text-[color:var(--color-text-tertiary)]" />
+    <div className="flex flex-col gap-7">
+      <div className="well flex h-11 items-center px-3.5">
+        <Search className="h-4 w-4 shrink-0 text-[color:var(--color-accent)]" />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Look up a designation…"
-          aria-label="Look up a designation"
-          className="min-w-0 flex-1 bg-transparent px-2.5 text-sm text-[color:var(--color-text)] placeholder:text-[color:var(--color-text-tertiary)] focus:outline-none"
+          placeholder="Search skins…"
+          aria-label="Search skins"
+          className="min-w-0 flex-1 bg-transparent px-3 text-[15px] text-[color:var(--color-text)] placeholder:text-[color:var(--color-text-tertiary)] focus:outline-none"
         />
       </div>
 
@@ -244,7 +269,7 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
                 aria-pressed={on}
                 title={`${e.label} · ${e.floatMin.toFixed(2)}–${e.floatMax.toFixed(2)}`}
                 className={[
-                  "focus-amber px-2 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors",
+                  "focus-amber rounded-[var(--radius-sm)] px-2.5 py-1.5 font-mono text-[12px] font-medium uppercase tracking-[0.1em] transition-colors",
                   on
                     ? "bg-[color:var(--color-accent)] text-[color:var(--color-accent-fg)]"
                     : "border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] text-[color:var(--color-text-secondary)] hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)]",
@@ -270,7 +295,7 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
             aria-label={`Minimum price in ${currency}`}
             value={priceMin}
             onChange={(e) => setPriceMin(e.target.value)}
-            className="readout w-full rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] px-2 py-1.5 text-sm outline-none focus:border-[color:var(--color-accent)]"
+            className="readout h-11 w-full rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] px-3 text-[15px] outline-none focus:border-[color:var(--color-accent)]"
           />
           <span className="text-[color:var(--color-text-tertiary)]">–</span>
           <input
@@ -280,7 +305,7 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
             aria-label={`Maximum price in ${currency}`}
             value={priceMax}
             onChange={(e) => setPriceMax(e.target.value)}
-            className="readout w-full rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] px-2 py-1.5 text-sm outline-none focus:border-[color:var(--color-accent)]"
+            className="readout h-11 w-full rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] px-3 text-[15px] outline-none focus:border-[color:var(--color-accent)]"
           />
         </div>
       </FilterGroup>
@@ -295,13 +320,17 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
                 onClick={() => toggle(rarities, r.name, setRarities)}
                 aria-pressed={on}
                 className={[
-                  "focus-amber flex items-center gap-2 px-2 py-1.5 text-left text-[13px] transition-colors",
+                  "focus-amber flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-2 text-left text-[14px] transition-colors",
                   on
                     ? "bg-[color:var(--color-accent)] text-[color:var(--color-accent-fg)]"
-                    : "text-[color:var(--color-text-secondary)] hover:bg-[color:var(--color-accent-tint)] hover:text-[color:var(--color-accent)]",
+                    : "text-[color:var(--color-text-secondary)] hover:bg-[color:var(--color-bg-secondary)] hover:text-[color:var(--color-text)]",
                 ].join(" ")}
-                style={{ boxShadow: `inset 3px 0 0 0 ${r.color}` }}
               >
+                <span
+                  aria-hidden
+                  className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                  style={{ background: r.color }}
+                />
                 {r.name}
               </button>
             );
@@ -359,59 +388,90 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-[var(--max-width)] gap-6 px-4 py-6 sm:px-6 lg:px-8">
-      <aside className="hidden w-64 shrink-0 lg:block">
-        <div className="sticky top-[150px] flex max-h-[calc(100dvh-170px)] flex-col border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]">
-          <hr className="tape-rule border-0" />
-          <div className="flex items-center justify-between border-b border-[color:var(--color-border)] bg-[color:var(--color-accent-tint)] px-4 py-2.5">
-            <span className="label text-[10px]">Specification</span>
+    <div className="mx-auto flex w-full max-w-[var(--max-width)] gap-8 px-5 py-8 sm:px-6 lg:px-8">
+      <aside className="hidden w-72 shrink-0 lg:block">
+        <div className="sticky top-[150px] flex max-h-[calc(100dvh-170px)] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] shadow-[var(--shadow-card)]">
+          <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-5 py-3.5">
+            <span className="label">Filters</span>
             {activeCount > 0 && (
               <button
                 onClick={clearAll}
-                className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-primary-strong)] hover:underline"
+                className="text-[14px] font-semibold text-[color:var(--color-primary)] hover:underline"
               >
                 Clear ({activeCount})
               </button>
             )}
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4">{sidebar}</div>
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5">{sidebar}</div>
         </div>
       </aside>
 
       <div className="min-w-0 flex-1">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-[color:var(--color-border)] pb-3">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[color:var(--color-border)] pb-4">
           <div className="flex items-end gap-3">
             <button
               onClick={() => setMobileOpen(true)}
-              className="focus-amber inline-flex items-center gap-2 border border-[color:var(--color-accent)] px-3 py-2 text-sm font-semibold text-[color:var(--color-accent)] lg:hidden"
+              className="focus-amber inline-flex h-11 items-center gap-2 rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] px-3.5 text-[15px] font-semibold text-[color:var(--color-text)] lg:hidden"
             >
-              <SlidersHorizontal className="h-4 w-4" /> Filters
+              <SlidersHorizontal className="h-4 w-4 text-[color:var(--color-accent)]" /> Filters
               {activeCount > 0 && (
-                <span className="tnum bg-[color:var(--color-accent)] px-1.5 text-xs text-[color:var(--color-accent-fg)]">
+                <span className="tnum rounded-[var(--radius-sm)] bg-[color:var(--color-accent)] px-1.5 text-[12px] text-[color:var(--color-accent-fg)]">
                   {activeCount}
                 </span>
               )}
             </button>
-            <p className="flex items-baseline gap-2">
-              <span className="readout text-[clamp(1.25rem,3vw,1.75rem)] font-semibold leading-none text-[color:var(--color-text)]">
+            <p className="flex items-baseline gap-2.5">
+              <span className="readout text-[clamp(1.375rem,3vw,1.75rem)] font-semibold leading-none text-[color:var(--color-text)]">
                 {data ? data.total.toLocaleString() : "—"}
               </span>
-              <span className="microlabel">sheets in this index</span>
+              <span className="text-[15px] text-[color:var(--color-text-secondary)]">
+                skins in stock
+              </span>
             </p>
           </div>
 
-          <label className="flex items-center gap-2">
-            <span className="microlabel">Sort</span>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] px-3 py-2 text-sm outline-none focus:border-[color:var(--color-accent)]"
+          <div className="flex items-center gap-3">
+            {/* View toggle: the grid is the default, the parts list is opt-in. */}
+            <div
+              role="group"
+              aria-label="Result layout"
+              className="hidden items-center rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] p-0.5 sm:inline-flex"
             >
-              {SORTS.map((s) => (
-                <option key={s.value} value={s.value}>{s.label}</option>
+              {([
+                { id: "grid", label: "Cards", Icon: LayoutGrid },
+                { id: "list", label: "Parts list", Icon: Rows3 },
+              ] as const).map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => chooseView(id)}
+                  aria-pressed={view === id}
+                  className={[
+                    "focus-amber inline-flex h-9 items-center gap-1.5 rounded-[var(--radius-sm)] px-3 text-[14px] font-medium transition-colors",
+                    view === id
+                      ? "bg-[color:var(--color-accent)] text-[color:var(--color-accent-fg)]"
+                      : "text-[color:var(--color-text-secondary)] hover:text-[color:var(--color-text)]",
+                  ].join(" ")}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </button>
               ))}
-            </select>
-          </label>
+            </div>
+
+            <label className="flex items-center gap-2">
+              <span className="microlabel">Sort</span>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="h-11 rounded-[var(--radius-md)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] px-3 text-[15px] outline-none focus:border-[color:var(--color-accent)]"
+              >
+                {SORTS.map((s) => (
+                  <option key={s.value} value={s.value}>{s.label}</option>
+                ))}
+              </select>
+            </label>
+          </div>
         </div>
 
         {activeTags.length > 0 && (
@@ -420,7 +480,7 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
               <button
                 key={t.key}
                 onClick={t.remove}
-                className="group inline-flex items-center gap-1.5 border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] px-2 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-text-secondary)] transition-colors hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)]"
+                className="group inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-elevated)] px-2.5 py-1.5 text-[14px] text-[color:var(--color-text-secondary)] transition-colors hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)]"
               >
                 {t.label}
                 <X className="h-3 w-3 transition-colors group-hover:text-[color:var(--color-primary-strong)]" />
@@ -428,45 +488,48 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
             ))}
             <button
               onClick={clearAll}
-              className="ml-1 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-primary-strong)] hover:underline"
+              className="ml-1 text-[14px] font-semibold text-[color:var(--color-primary)] hover:underline"
             >
               Clear all
             </button>
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-          {items.map((it, i) => (
-            <SihItemCard key={it.slug} item={it} index={i} />
-          ))}
-          {loading && items.length === 0 &&
-            Array.from({ length: 12 }).map((_, i) => <SihItemCardSkeleton key={i} />)}
-        </div>
+        {view === "grid" ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {items.map((it, i) => (
+              <SihItemCard key={it.slug} item={it} index={i} />
+            ))}
+            {loading && items.length === 0 &&
+              Array.from({ length: 8 }).map((_, i) => <SihItemCardSkeleton key={i} />)}
+          </div>
+        ) : items.length > 0 ? (
+          <SihPartsTable items={items} />
+        ) : null}
 
         {!loading && items.length === 0 && (
-          <div className="relative overflow-hidden border border-[color:var(--color-border-strong)] py-20 text-center">
-            <span aria-hidden className="hatch absolute inset-0 opacity-20" />
-            <p className="drawing-title relative text-[clamp(1.25rem,3vw,1.75rem)]">
-              No sheet matches this specification
+          <div className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] px-6 py-20 text-center">
+            <p className="drawing-title text-[clamp(1.25rem,3vw,1.75rem)]">
+              Nothing matches these filters
             </p>
-            <p className="relative mt-2 text-sm text-[color:var(--color-text-secondary)]">
+            <p className="measure mx-auto mt-3 text-[16px] text-[color:var(--color-text-secondary)]">
               Nothing in stock satisfies every constraint you have set.
             </p>
             <button
               onClick={clearAll}
-              className="relative mt-5 inline-flex h-10 items-center bg-[color:var(--color-primary-strong)] px-5 text-sm font-semibold text-[color:var(--color-primary-fg)] transition-colors hover:bg-[color:var(--color-primary-hover)]"
+              className="mt-6 inline-flex h-11 items-center rounded-[var(--radius-md)] bg-[color:var(--color-primary-strong)] px-5 text-[15px] font-semibold text-[color:var(--color-primary-fg)] transition-colors hover:bg-[color:var(--color-primary-hover)]"
             >
-              Clear the specification
+              Clear all filters
             </button>
           </div>
         )}
 
         {data && page < data.totalPages && (
-          <div className="mt-8 flex justify-center">
+          <div className="mt-10 flex justify-center">
             <button
               onClick={loadMore}
               disabled={loading}
-              className="focus-amber border border-[color:var(--color-accent)] px-6 py-2.5 text-sm font-semibold text-[color:var(--color-accent)] transition-colors hover:bg-[color:var(--color-accent)] hover:text-[color:var(--color-accent-fg)] disabled:opacity-50"
+              className="focus-amber h-12 rounded-[var(--radius-md)] border border-[color:var(--color-accent)] px-7 text-[15px] font-semibold text-[color:var(--color-accent)] transition-colors hover:bg-[color:var(--color-accent-tint)] disabled:opacity-50"
             >
               {loading ? "Loading…" : "Load more"}
             </button>
@@ -476,10 +539,10 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
 
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-[#122448]/70" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-[86%] max-w-sm overflow-y-auto border-r border-[color:var(--color-accent)] bg-[color:var(--color-bg)] p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="label text-[11px]">Specification</span>
+          <div className="absolute inset-0 bg-[#22262E]/50" onClick={() => setMobileOpen(false)} />
+          <div className="absolute left-0 top-0 h-full w-[88%] max-w-sm overflow-y-auto bg-[color:var(--color-bg-elevated)] p-5">
+            <div className="mb-5 flex items-center justify-between">
+              <span className="label">Filters</span>
               <button onClick={() => setMobileOpen(false)} aria-label="Close filters">
                 <X className="h-5 w-5" />
               </button>
@@ -487,9 +550,9 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
             {sidebar}
             <button
               onClick={() => setMobileOpen(false)}
-              className="mt-6 w-full bg-[color:var(--color-primary-strong)] py-3 text-sm font-semibold text-[color:var(--color-primary-fg)]"
+              className="mt-7 h-12 w-full rounded-[var(--radius-md)] bg-[color:var(--color-primary-strong)] text-[15px] font-semibold text-[color:var(--color-primary-fg)]"
             >
-              Show {data?.total.toLocaleString() ?? ""} sheets
+              Show {data?.total.toLocaleString() ?? ""} skins
             </button>
           </div>
         </div>
@@ -501,10 +564,7 @@ export function SihCatalogClient({ facets }: { facets: SihFacets }) {
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="mb-2.5">
-        <span className="label block text-[10px]">{title}</span>
-        <DimLine className="mt-1.5 opacity-70" />
-      </div>
+      <p className="label mb-3">{title}</p>
       {children}
     </div>
   );
@@ -526,8 +586,8 @@ function ChipButton({
       onClick={onClick}
       aria-pressed={on}
       className={[
-        "focus-amber font-mono font-semibold uppercase tracking-[0.14em] transition-colors",
-        small ? "px-1.5 py-1 text-[10px]" : "px-2 py-1.5 text-[11px]",
+        "focus-amber rounded-[var(--radius-sm)] font-medium transition-colors",
+        small ? "px-2 py-1 text-[13px]" : "px-2.5 py-1.5 text-[14px]",
         on
           ? "bg-[color:var(--color-accent)] text-[color:var(--color-accent-fg)]"
           : "border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] text-[color:var(--color-text-secondary)] hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)]",
@@ -552,19 +612,19 @@ function Toggle({
       onClick={() => onChange(!checked)}
       role="switch"
       aria-checked={checked}
-      className="focus-amber flex items-center justify-between text-[13px] text-[color:var(--color-text-secondary)]"
+      className="focus-amber flex items-center justify-between text-[15px] text-[color:var(--color-text)]"
     >
       <span>{label}</span>
       <span
-        className={`relative h-5 w-9 border transition-colors ${
+        className={`relative h-6 w-11 rounded-[var(--radius-md)] border transition-colors ${
           checked
             ? "border-[color:var(--color-accent)] bg-[color:var(--color-accent)]"
             : "border-[color:var(--color-border-strong)] bg-[color:var(--color-bg-tertiary)]"
         }`}
       >
         <span
-          className={`absolute top-[2px] h-[14px] w-[14px] bg-[color:var(--color-bg-elevated)] transition-all ${
-            checked ? "left-[19px]" : "left-[2px]"
+          className={`absolute top-[3px] h-[16px] w-[16px] rounded-[3px] bg-[color:var(--color-bg-elevated)] transition-all ${
+            checked ? "left-[23px]" : "left-[3px]"
           }`}
         />
       </span>

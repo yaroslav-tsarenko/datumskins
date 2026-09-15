@@ -19,8 +19,8 @@ interface ChipProps extends React.HTMLAttributes<HTMLSpanElement> {
 /**
  * Datumskins Chip — the filter / status annotation.
  *
- * Ruled and mono-labelled: a chip here reads as a note on a drawing, not as a
- * rounded pill from a component kit.
+ * Softly cornered at 4px and mono-labelled at 12px: a chip here reads as a
+ * note beside a spec, not as a rounded pill from a component kit.
  */
 export function Chip({
   color = "default",
@@ -35,8 +35,8 @@ export function Chip({
   ...rest
 }: ChipProps) {
   const sizes: Record<ChipSize, string> = {
-    sm: "h-6 px-2 text-[10px]",
-    md: "h-7 px-2.5 text-[11px]",
+    sm: "h-7 px-2.5 text-[12px]",
+    md: "h-8 px-3 text-[12px]",
     lg: "h-8 px-3 text-xs",
   };
 
@@ -88,7 +88,7 @@ export function Chip({
       className={twMerge(
         clsx(
           "inline-flex items-center gap-1.5 rounded-[var(--radius-sm)]",
-          "font-mono font-semibold uppercase leading-none tracking-[0.16em]",
+          "font-mono font-medium uppercase leading-none tracking-[0.1em]",
           sizes[size],
           palettes[color][resolvedVariant],
           className,

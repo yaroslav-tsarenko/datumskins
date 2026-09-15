@@ -1,135 +1,154 @@
 /*
- * Datumskins — "Blueprint Works" CS2 skins store design tokens.
+ * Datumskins — "Blueprint Works" design tokens, revision B (Studio).
  *
- * Concept: every CS2 skin already carries engineering data — float value,
- * paint seed, pattern index, wear ranges — so the store treats each one as a
- * technical document. The canvas is drafting paper with a faint millimetre
- * grid; the primary voice is blueprint ink, not black; skins are presented as
- * spec sheets with title blocks, callout leaders, wear diagrams and
- * inspection stamps. Precise, light, obsessive — technical romance.
+ * The concept is unchanged: every CS2 skin already carries real measured data
+ * — float, wear zone, paint seed, grade — so the store presents each one as a
+ * technical document. What changed is the dose. The blueprint is seasoning,
+ * not the meal.
  *
- * Structure is drawn, not shaded: 1px blueprint hairlines, double-rule frames
- * on featured sheets, and at most a 2px paper-lift on hover. There are no
- * ambient shadows in this identity.
+ * Revision B rules, enforced by these tokens:
+ *   · Everything you READ is drafting charcoal #22262E on near-white. Blueprint
+ *     blue never carries a sentence — it survives in micro-labels (>=12px,
+ *     medium), thin rules, icon strokes, the logo and hover accents.
+ *   · The millimetre grid lives ONLY on `.drafting-field` (hero backdrop,
+ *     section header bands, item render stage) at <=4% and never behind body
+ *     text. Product grids, tables and forms sit on clean paper.
+ *   · Surfaces are lighter and calmer: #F8F8F5 base, pure white cards, the
+ *     vellum tint reserved for thin divider bands.
+ *   · Line noise is down: soft dividers instead of ruled borders, the double
+ *     rule kept only for featured sheets.
  *
- * Token NAMES are kept stable so every existing component keeps working while
- * the palette is fully re-skinned. Consumed by @theme in globals.css. Light
- * ("Drafting") is the primary theme; "Night Shift" (cyanotype) is a
- * first-class inversion.
+ * Contrast, measured (WCAG 2.1 relative luminance, not eyeballed):
+ *   #22262E on #FFFFFF ........... 15.2:1     #22262E on #F8F8F5 ... 14.3:1
+ *   #1D3F8F on #FFFFFF ............ 9.7:1     #1D3F8F on #F8F8F5 .... 9.1:1
+ *   #5C626E on #F8F8F5 ............ 5.8:1     #666D79 on #F8F8F5 .... 4.9:1
+ *   #FFFFFF on #C7342B ............ 5.3:1     #C7342B on #FFFFFF .... 5.3:1
+ *   Night Shift: #E8EBF2 on #151A24 14.6:1    #7C9BE8 on #151A24 .... 6.4:1
+ *                #A3AAB8 on #151A24  7.5:1    #FF7A6E on #151A24 .... 6.9:1
+ *
+ * Token NAMES are stable, so every untouched surface — the admin panel
+ * included — follows this revision without being edited. Consumed by @theme in
+ * globals.css.
  */
 
-/* ── DEFAULT (drafting paper) — primary theme ──────────────────────────── */
+/* -- DEFAULT (studio daylight) - primary theme --------------------------- */
 :root {
-  /* ── Inspection red — the stamp. CTAs, deals, active states ───────────
-     Two inks on purpose: `primary` is the stamp red used as a fill under
-     BLACK-ish drafting ink and as linework; `primary-strong` is the darker
-     press red for fills that carry WHITE type (5.2:1), so buttons clear AA
-     at body size rather than only large-text AA. */
-  --color-primary: #D6382E;          /* inspection red — stamps, rules, marks */
-  --color-primary-strong: #C22C22;   /* press red — fills carrying white type */
-  --color-primary-hover: #A82219;
-  --color-primary-tint: #FAE0DE;
-  --color-primary-glow: rgba(214, 56, 46, 0.24);
+  /* -- Inspection red - the single loud colour. CTAs and stamps ---------
+     One red, deepened so white type on it clears AA at body size (5.3:1)
+     and it still reads as type on white (5.3:1). */
+  --color-primary: #C7342B;
+  --color-primary-strong: #C7342B;
+  --color-primary-hover: #A62A22;
+  --color-primary-tint: #FBEAE8;
+  --color-primary-glow: rgba(199, 52, 43, 0.18);
   --color-primary-fg: #FFFFFF;
-  --color-primary-ink: #2A0F0C;
+  --color-primary-ink: #3A0F0B;
 
-  /* ── Blueprint ink — the primary VOICE: headings, linework, rules ───── */
+  /* -- Blueprint blue - the brand thread, never reading text ------------
+     Section-title underlines, the active nav rule, icon strokes, the logo,
+     chart lines, hover accents, and uppercase micro-labels at 12px+. */
   --color-accent: #1D3F8F;
   --color-accent-hover: #17347A;
-  --color-accent-tint: #E4EAF7;
+  --color-accent-tint: #EDF1FA;
   --color-accent-fg: #FFFFFF;
   --color-blueprint: #1D3F8F;
-  --color-blueprint-soft: #6E85C0;   /* secondary linework, gridlines, leaders */
+  --color-blueprint-soft: #7389BE;   /* decorative linework only - never type (3.3:1) */
 
-  /* ── Approval green — PASSED / IN STOCK stamps ───────────────────────── */
-  --color-teal: #2E8B57;
-  --color-teal-hover: #256F46;
-  --color-teal-tint: #E2F1E8;
+  /* -- Approval green - PASSED / IN STOCK ------------------------------- */
+  --color-teal: #24774A;
+  --color-teal-hover: #1B5C39;
+  --color-teal-tint: #E6F2EB;
 
-  /* ── Trade-lock amber — the HOLD stamp ───────────────────────────────── */
-  --color-gold: #DB9C3B;
-  --color-gold-hover: #C1862B;
-  --color-gold-tint: #FAEEDA;
-  --color-gold-glow: rgba(219, 156, 59, 0.24);
+  /* -- Trade-lock amber - the HOLD state -------------------------------- */
+  --color-gold: #8A5E12;             /* darkened so it passes as type */
+  --color-gold-hover: #6E4B0E;
+  --color-gold-tint: #FBF0DC;
+  --color-gold-glow: rgba(138, 94, 18, 0.16);
 
-  --color-bronze: #DB9C3B;           /* alias → amber, legacy consumers */
-  --color-bronze-hover: #C1862B;
-  --color-bronze-tint: #FAEEDA;
+  --color-bronze: #8A5E12;
+  --color-bronze-hover: #6E4B0E;
+  --color-bronze-tint: #FBF0DC;
 
-  --color-coral: #D6382E;            /* deals → inspection red */
-  --color-coral-hover: #C22C22;
-  --color-coral-tint: #FAE0DE;
+  --color-coral: #C7342B;
+  --color-coral-hover: #A62A22;
+  --color-coral-tint: #FBEAE8;
 
-  --color-violet: #1D3F8F;           /* alias → blueprint ink */
+  --color-violet: #1D3F8F;
   --color-violet-hover: #17347A;
-  --color-violet-tint: #E4EAF7;
+  --color-violet-tint: #EDF1FA;
 
-  --color-secondary: #EFEDE6;
+  /* -- Stamp fills - solid inks that always carry white type -----------
+     Given their own tokens rather than reusing the status colours, because a
+     status colour is tuned to read as TYPE on a tint while a stamp fill has to
+     carry white type on itself AND stand off the card behind it. */
+  --stamp-inspection-bg: #C7342B;    /* white 5.3:1 | vs card 5.3:1 */
+  --stamp-approve-bg: #24774A;       /* white 5.5:1 | vs card 5.5:1 */
+  --stamp-hold-bg: #8A5E12;          /* white 5.7:1 | vs card 5.7:1 */
+
+  --color-secondary: #F1F1EC;
   --color-price: var(--color-text);
-  --color-cta: var(--color-primary-strong);
+  --color-cta: var(--color-primary);
   --color-cta-hover: var(--color-primary-hover);
-  --color-header: #F6F5F0;
-  --color-header-secondary: #EFEDE6;
+  --color-header: #FFFFFF;
+  --color-header-secondary: #F1F1EC;
 
   --color-accent-light: var(--color-accent-tint);
   --color-accent-2: var(--color-primary);
   --color-accent-2-hover: var(--color-primary-hover);
   --color-accent-3: var(--color-teal);
-  --color-accent-4: #6E7484;
+  --color-accent-4: #5C626E;
 
-  /* ── Surfaces — paper stock ──────────────────────────────────────────
-     bg           drafting paper (carries the millimetre grid)
-     bg-secondary vellum band
-     bg-elevated  bright paper — the sheet a drawing is printed on
-     bg-tertiary  inset well (inputs, table zebra, gauge track) */
-  --color-bg: #F6F5F0;
-  --color-bg-elevated: #FDFCF8;
-  --color-bg-secondary: #EFEDE6;
-  --color-bg-tertiary: #E8E5DC;
-  --color-bg-warm: #EFEDE6;
-  --color-bg-cool: #FDFCF8;
-  --color-bg-poster: #122448;        /* the cyanotype band */
+  /* -- Surfaces --------------------------------------------------------
+     bg           studio paper - near-white, barely warm, no grid
+     bg-elevated  pure white - every card, table and reading surface
+     bg-secondary vellum tint - thin divider bands only
+     bg-tertiary  inset well (inputs, zebra rows, gauge track) */
+  --color-bg: #F8F8F5;
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-secondary: #F1F1EC;
+  --color-bg-tertiary: #ECECE6;
+  --color-bg-warm: #F1F1EC;
+  --color-bg-cool: #FFFFFF;
+  --color-bg-poster: #151A24;
 
-  /* ── Ink ─────────────────────────────────────────────────────────────
-     Long-form copy is drafting charcoal for legibility; headings, labels and
-     linework are blueprint blue. Never pure black anywhere. */
-  --color-text: #232830;
-  --color-text-secondary: #6E7484;
-  --color-text-tertiary: #9AA0AE;
-  --color-text-inverse: #F6F5F0;
+  /* -- Ink - everything you read ---------------------------------------- */
+  --color-text: #22262E;
+  --color-text-secondary: #5C626E;
+  --color-text-tertiary: #666D79;    /* still AA at body size (4.9:1) */
+  --color-text-inverse: #F8F8F5;
 
-  /* ── Lines — blueprint hairlines ─────────────────────────────────────── */
-  --color-border: #CBD2E2;
-  --color-border-hover: #A9B4CC;
-  --color-border-strong: #8794B4;
-  --color-hairline: rgba(29, 63, 143, 0.14);
+  /* -- Lines - soft dividers, not drawing rules ------------------------- */
+  --color-border: #E5E5DF;
+  --color-border-hover: #CFCFC7;
+  --color-border-strong: #C4C4BB;
+  --color-hairline: rgba(34, 38, 46, 0.08);
 
-  /* Grid lines for the drafting paper — minors and 8-unit majors. */
-  --grid-minor: rgba(29, 63, 143, 0.055);
-  --grid-major: rgba(29, 63, 143, 0.09);
-  --grid-step: 8px;
+  /* Grid for `.drafting-field` only - <=4%, never behind body text. */
+  --grid-minor: rgba(29, 63, 143, 0.030);
+  --grid-major: rgba(29, 63, 143, 0.045);
+  --grid-step: 9px;
 
-  /* ── Status ──────────────────────────────────────────────────────────── */
-  --color-success: #2E8B57;
-  --color-success-light: #E2F1E8;
-  --color-warning: #B57415;          /* amber darkened for AA as type */
-  --color-warning-light: #FAEEDA;
-  --color-danger: #C0392F;
-  --color-danger-light: #FAE0DE;
+  /* -- Status ----------------------------------------------------------- */
+  --color-success: #24774A;
+  --color-success-light: #E6F2EB;
+  --color-warning: #8A5E12;
+  --color-warning-light: #FBF0DC;
+  --color-danger: #C7342B;
+  --color-danger-light: #FBEAE8;
   --color-info: #1D3F8F;
 
-  /* ── CS2 rarity (first-class) ────────────────────────────────────────
-     Drawn as a rarity index chip in the title block plus a thin rule under
-     the render. The -raw values are the Valve hues used for the rule and the
-     chip dot; the plain tokens are darkened so a rarity NAME reads as type. */
-  --rarity-consumer: #7C8798;
-  --rarity-industrial: #3F72B0;
-  --rarity-milspec: #3A4FCB;
-  --rarity-restricted: #6F33D8;
-  --rarity-classified: #B01BC0;
-  --rarity-covert: #C4342A;
-  --rarity-gold: #B08B0C;
-  --rarity-contraband: #A9791F;
+  /* -- CS2 rarity ------------------------------------------------------
+     Shown as a small labelled chip plus a thin rule under the render. The
+     -raw hues draw the rule and the swatch; the plain tokens are darkened so
+     a grade NAME stays legible as type on white. */
+  --rarity-consumer: #5F6A78;
+  --rarity-industrial: #2F5F97;
+  --rarity-milspec: #3040B4;
+  --rarity-restricted: #5C27B8;
+  --rarity-classified: #96169F;
+  --rarity-covert: #B02A21;
+  --rarity-gold: #8A6A05;
+  --rarity-contraband: #8A600F;
 
   --rarity-consumer-raw: #b0c3d9;
   --rarity-industrial-raw: #5e98d9;
@@ -140,201 +159,225 @@
   --rarity-gold-raw: #ffd700;
   --rarity-contraband-raw: #e4ae39;
 
-  /* ── Wear scale (FN → BS) — the zones on the wear diagram ────────────── */
-  --wear-fn: #2E8B57;
-  --wear-mw: #6C9B3C;
-  --wear-ft: #DB9C3B;
-  --wear-ww: #D2752B;
-  --wear-bs: #C0392F;
-  --gradient-wear: linear-gradient(90deg, #2E8B57 0%, #6C9B3C 20%, #DB9C3B 45%, #D2752B 72%, #C0392F 100%);
+  /* -- Wear zones - soft tinted fills on the gauge, darker ink for the
+       labels and codes that sit outside it ----------------------------- */
+  --wear-fn: #24774A;
+  --wear-mw: #4E7A2A;
+  --wear-ft: #8A5E12;
+  --wear-ww: #9A4E14;
+  --wear-bs: #A6362B;
 
-  /* ── Surface treatments — this identity has no glass and no metal ────── */
-  --stroke-metal: linear-gradient(135deg, rgba(29,63,143,0.28) 0%, rgba(29,63,143,0.08) 45%, rgba(29,63,143,0.22) 100%);
-  --stroke-gold: linear-gradient(135deg, rgba(219,156,59,0.5) 0%, rgba(219,156,59,0.1) 45%, rgba(219,156,59,0.45) 100%);
-  --stroke-amber: linear-gradient(135deg, rgba(214,56,46,0.5) 0%, rgba(214,56,46,0.1) 45%, rgba(214,56,46,0.45) 100%);
-  --glass-bg: #FDFCF8;
-  --glass-bg-strong: #FDFCF8;
-  --glass-border: #CBD2E2;
+  --wear-fn-fill: #E4F1E9;
+  --wear-mw-fill: #EBF2E1;
+  --wear-ft-fill: #FAF0DC;
+  --wear-ww-fill: #FAEADC;
+  --wear-bs-fill: #FBE8E5;
+
+  --gradient-wear: linear-gradient(90deg, #E4F1E9 0%, #EBF2E1 20%, #FAF0DC 45%, #FAEADC 72%, #FBE8E5 100%);
+
+  /* -- Surface treatments - flat, no glass, no metal --------------------- */
+  --stroke-metal: none;
+  --stroke-gold: none;
+  --stroke-amber: none;
+  --glass-bg: #FFFFFF;
+  --glass-bg-strong: #FFFFFF;
+  --glass-border: #E5E5DF;
   --glass-blur: 0px;
 
-  /* ── Elevation — a sheet of paper lifting off the board. 1–2px, low alpha,
-       and nothing else. ─────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 0 rgba(35, 40, 48, 0.05);
-  --shadow-md: 1px 2px 0 rgba(35, 40, 48, 0.08);
-  --shadow-lg: 2px 3px 0 rgba(35, 40, 48, 0.10);
-  --shadow-xl: 3px 4px 0 rgba(35, 40, 48, 0.10);
-  --shadow-card: 0 1px 0 rgba(35, 40, 48, 0.04);
-  --shadow-card-hover: 2px 3px 0 rgba(29, 63, 143, 0.16);
-  --shadow-accent: 1px 2px 0 rgba(29, 63, 143, 0.18);
-  --shadow-warm: 1px 2px 0 rgba(214, 56, 46, 0.2);
-  --shadow-glow-amber: 1px 2px 0 rgba(214, 56, 46, 0.2);
-  --shadow-glow-azure: 1px 2px 0 rgba(29, 63, 143, 0.18);
-  --shadow-glow-violet: 1px 2px 0 rgba(29, 63, 143, 0.18);
-  --shadow-glow-gold: 1px 2px 0 rgba(219, 156, 59, 0.22);
+  /* -- Elevation - a card resting on paper. Soft and short. -------------- */
+  --shadow-sm: 0 1px 2px rgba(34, 38, 46, 0.05);
+  --shadow-md: 0 2px 6px rgba(34, 38, 46, 0.07);
+  --shadow-lg: 0 6px 18px rgba(34, 38, 46, 0.09);
+  --shadow-xl: 0 12px 32px rgba(34, 38, 46, 0.10);
+  --shadow-card: 0 1px 2px rgba(34, 38, 46, 0.05);
+  --shadow-card-hover: 0 8px 22px rgba(34, 38, 46, 0.10);
+  --shadow-accent: 0 4px 14px rgba(29, 63, 143, 0.14);
+  --shadow-warm: 0 4px 14px rgba(199, 52, 43, 0.16);
+  --shadow-glow-amber: 0 4px 14px rgba(199, 52, 43, 0.16);
+  --shadow-glow-azure: 0 4px 14px rgba(29, 63, 143, 0.14);
+  --shadow-glow-violet: 0 4px 14px rgba(29, 63, 143, 0.14);
+  --shadow-glow-gold: 0 4px 14px rgba(138, 94, 18, 0.14);
 
-  /* ── Gradients — only the wear scale and the hatch need one ──────────── */
-  --gradient-primary: linear-gradient(135deg, #D6382E 0%, #E2665C 100%);
-  --gradient-accent: linear-gradient(135deg, #1D3F8F 0%, #3F72B0 100%);
-  --gradient-gold: linear-gradient(135deg, #DB9C3B 0%, #C1862B 100%);
-  --gradient-metal: linear-gradient(135deg, #FDFCF8 0%, #E8E5DC 100%);
-  --gradient-warm: linear-gradient(180deg, #FDFCF8 0%, #F6F5F0 100%);
-  --gradient-cool: linear-gradient(180deg, #EFEDE6 0%, #F6F5F0 100%);
+  /* -- Gradients - the wear scale is the only one that earns its place --- */
+  --gradient-primary: none;
+  --gradient-accent: none;
+  --gradient-gold: none;
+  --gradient-metal: none;
+  --gradient-warm: none;
+  --gradient-cool: none;
   --gradient-hero: none;
-  --gradient-badge: linear-gradient(135deg, #D6382E 0%, #DB9C3B 100%);
-  --gradient-mint: linear-gradient(135deg, #E2F1E8 0%, #F6F5F0 100%);
-  --gradient-sunset: linear-gradient(135deg, #FAE0DE 0%, #FAEEDA 100%);
-  --gradient-electric: linear-gradient(135deg, #1D3F8F 0%, #D6382E 100%);
+  --gradient-badge: none;
+  --gradient-mint: none;
+  --gradient-sunset: none;
+  --gradient-electric: none;
   --gradient-card-hover: none;
 
-  /* ── Radii — drawings are ruled, not rounded. 0–3px only; the pill token
-       survives for legacy call sites and is squared in globals.css. ─────── */
-  --radius-sm: 0px;
-  --radius-md: 1px;
-  --radius-lg: 2px;
-  --radius-xl: 2px;
-  --radius-2xl: 3px;
+  /* -- Radii - softened off the drafting sheet, still not uniform -------
+       4 chips and labels | 6 buttons, inputs, stamps | 10 cards |
+       12 featured sheets and panels | 14 modals */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
   --radius-pill: 9999px;
 
-  /* ── Layout ──────────────────────────────────────────────────────────── */
+  /* -- Layout - roomier than revision A by about a quarter --------------- */
   --max-width: 1360px;
-  --header-height: 76px;
-  --announcement-height: 36px;
+  --header-height: 78px;
+  --announcement-height: 38px;
+  --pad-card: 1.25rem;
+  --pad-section-y: 3.75rem;
+  --pad-section-y-lg: 6.25rem;
 
-  /* ── Type — engineering grotesk, drafting body, annotation mono ──────── */
+  /* -- Type ------------------------------------------------------------
+       Inter carries every sentence at 16px / 1.6. Space Grotesk sets
+       headings. JetBrains Mono is for DATA ONLY - floats, seeds, prices,
+       sheet numbers - and never for a sentence. */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
 
-  /* ── Motion — instruments settle, they do not bounce ─────────────────── */
+  /* -- Motion - 160-220ms, nothing bounces ------------------------------ */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-spring: cubic-bezier(0.34, 1.2, 0.64, 1);
-  --dur-fast: 140ms;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;
   --dur-base: 190ms;
-  --dur-slow: 240ms;
+  --dur-slow: 220ms;
 
-  /* ── Promo tints ─────────────────────────────────────────────────────── */
-  --promo-bg-blue: #E4EAF7;
-  --promo-bg-warm: #FAE0DE;
-  --promo-bg-green: #E2F1E8;
-  --promo-bg-purple: #E4EAF7;
-  --promo-bg-pink: #FAE0DE;
+  /* -- Promo tints ------------------------------------------------------ */
+  --promo-bg-blue: #EDF1FA;
+  --promo-bg-warm: #FBEAE8;
+  --promo-bg-green: #E6F2EB;
+  --promo-bg-purple: #EDF1FA;
+  --promo-bg-pink: #FBEAE8;
 
   color-scheme: light;
 }
 
-/* ── NIGHT SHIFT (dark) — the classic inverted blueprint ───────────────────
-   Deep cyanotype navy paper, pale cyan-white linework, the grid still faintly
-   visible, and the inspection stamps preserved in red so the one decisive
-   colour survives the inversion. */
+/* -- NIGHT SHIFT (dark) - revised for comfort -----------------------------
+   A deep neutral navy-charcoal rather than a saturated cyanotype: the eye can
+   sit in it for an evening. The grid is barely there, the linework softens to
+   a pale periwinkle, and the red survives so the one decisive colour is the
+   same brand in both modes. */
 [data-theme="dark"],
 .dark {
-  --color-primary: #F0574B;
-  --color-primary-strong: #E2483C;
-  --color-primary-hover: #F5786E;
-  --color-primary-tint: rgba(240, 87, 75, 0.16);
-  --color-primary-glow: rgba(240, 87, 75, 0.3);
+  --color-primary: #E2564A;
+  --color-primary-strong: #C7342B;   /* fills carrying white type */
+  --color-primary-hover: #B02C23;    /* darkens on hover so white stays 6.5:1 */
+  --color-primary-tint: rgba(226, 86, 74, 0.14);
+  --color-primary-glow: rgba(226, 86, 74, 0.22);
   --color-primary-fg: #FFFFFF;
-  --color-primary-ink: #1A0907;
+  --color-primary-ink: #2A0906;
 
-  --color-accent: #8FB4FF;           /* pale cyanotype linework */
-  --color-accent-hover: #B3CCFF;
-  --color-accent-tint: rgba(143, 180, 255, 0.16);
-  --color-accent-fg: #0B1834;
-  --color-blueprint: #8FB4FF;
-  --color-blueprint-soft: #5C7FC4;
+  --color-accent: #7C9BE8;
+  --color-accent-hover: #9BB3EF;
+  --color-accent-tint: rgba(124, 155, 232, 0.14);
+  --color-accent-fg: #101520;
+  --color-blueprint: #7C9BE8;
+  --color-blueprint-soft: #55679A;
 
   --color-teal: #4FB27C;
   --color-teal-hover: #6CC494;
-  --color-teal-tint: rgba(79, 178, 124, 0.16);
+  --color-teal-tint: rgba(79, 178, 124, 0.14);
 
-  --color-gold: #E4B25C;
-  --color-gold-hover: #EFC67C;
-  --color-gold-tint: rgba(228, 178, 92, 0.16);
+  --color-gold: #DCAE5E;
+  --color-gold-hover: #E8C078;
+  --color-gold-tint: rgba(220, 174, 94, 0.14);
 
-  --color-bronze: #E4B25C;
-  --color-bronze-hover: #EFC67C;
-  --color-bronze-tint: rgba(228, 178, 92, 0.16);
+  --color-bronze: #DCAE5E;
+  --color-bronze-hover: #E8C078;
+  --color-bronze-tint: rgba(220, 174, 94, 0.14);
 
-  --color-coral: #F0574B;
-  --color-coral-hover: #F5786E;
-  --color-coral-tint: rgba(240, 87, 75, 0.16);
+  --color-coral: #FF7A6E;
+  --color-coral-hover: #FF968C;
+  --color-coral-tint: rgba(255, 122, 110, 0.14);
 
-  --color-violet: #8FB4FF;
-  --color-violet-hover: #B3CCFF;
-  --color-violet-tint: rgba(143, 180, 255, 0.16);
+  --color-violet: #7C9BE8;
+  --color-violet-hover: #9BB3EF;
+  --color-violet-tint: rgba(124, 155, 232, 0.14);
 
-  --color-secondary: #16294F;
-  --color-header: #122448;
-  --color-header-secondary: #0E1D3B;
+  /* Stamp fills lift just enough to clear 3:1 against the dark card while
+     keeping white type above 4.5:1 on themselves. */
+  --stamp-inspection-bg: #CE3A30;    /* white 4.9:1 | vs card 3.2:1 */
+  --stamp-approve-bg: #25804F;       /* white 4.9:1 | vs card 3.2:1 */
+  --stamp-hold-bg: #96661A;          /* white 5.0:1 | vs card 3.2:1 */
 
-  --color-accent-4: #8892AC;
+  --color-secondary: #1C2230;
+  --color-header: #171D28;
+  --color-header-secondary: #1C2230;
 
-  --color-bg: #122448;               /* cyanotype paper */
-  --color-bg-elevated: #16294F;      /* the sheet */
-  --color-bg-secondary: #0F1F3F;
-  --color-bg-tertiary: #0C1A36;
-  --color-bg-warm: #0F1F3F;
-  --color-bg-cool: #16294F;
-  --color-bg-poster: #0A152C;
+  --color-accent-4: #A3AAB8;
 
-  --color-text: #D9E6FF;             /* pale linework white */
-  --color-text-secondary: #93A6CC;
-  --color-text-tertiary: #8DA2CC;
-  --color-text-inverse: #122448;
+  --color-bg: #151A24;
+  --color-bg-elevated: #1C2230;
+  --color-bg-secondary: #191F2B;
+  --color-bg-tertiary: #222A3A;
+  --color-bg-warm: #191F2B;
+  --color-bg-cool: #1C2230;
+  --color-bg-poster: #101520;
 
-  --color-border: #27406E;
-  --color-border-hover: #35538A;
-  --color-border-strong: #4A6AA6;
-  --color-hairline: rgba(217, 230, 255, 0.12);
+  --color-text: #E8EBF2;
+  --color-text-secondary: #A3AAB8;
+  --color-text-tertiary: #949BAA;
+  --color-text-inverse: #151A24;
 
-  --grid-minor: rgba(217, 230, 255, 0.05);
-  --grid-major: rgba(217, 230, 255, 0.085);
+  --color-border: #2A3244;
+  --color-border-hover: #3A4459;
+  --color-border-strong: #45506A;
+  --color-hairline: rgba(232, 235, 242, 0.10);
+
+  --grid-minor: rgba(232, 235, 242, 0.022);
+  --grid-major: rgba(232, 235, 242, 0.035);
 
   --color-success: #4FB27C;
-  --color-success-light: rgba(79, 178, 124, 0.16);
-  --color-warning: #E4B25C;
-  --color-warning-light: rgba(228, 178, 92, 0.16);
-  --color-danger: #F0574B;
-  --color-danger-light: rgba(240, 87, 75, 0.16);
-  --color-info: #8FB4FF;
+  --color-success-light: rgba(79, 178, 124, 0.14);
+  --color-warning: #DCAE5E;
+  --color-warning-light: rgba(220, 174, 94, 0.14);
+  --color-danger: #FF7A6E;
+  --color-danger-light: rgba(255, 122, 110, 0.14);
+  --color-info: #7C9BE8;
 
-  --rarity-consumer: #b0c3d9;
+  --rarity-consumer: #B7C3D4;
   --rarity-industrial: #7FB3EC;
-  --rarity-milspec: #8496FF;
-  --rarity-restricted: #B98CFF;
-  --rarity-classified: #EE73F8;
-  --rarity-covert: #F5756B;
-  --rarity-gold: #ffd700;
-  --rarity-contraband: #e4ae39;
+  --rarity-milspec: #93A2FF;
+  --rarity-restricted: #BE97FF;
+  --rarity-classified: #F084F8;
+  --rarity-covert: #FF8579;
+  --rarity-gold: #FFD95C;
+  --rarity-contraband: #EFBE60;
 
-  --wear-fn: #4FB27C;
-  --wear-mw: #9CC45A;
-  --wear-ft: #E4B25C;
-  --wear-ww: #E89154;
-  --wear-bs: #F0574B;
-  --gradient-wear: linear-gradient(90deg, #4FB27C 0%, #9CC45A 20%, #E4B25C 45%, #E89154 72%, #F0574B 100%);
+  --wear-fn: #6BC494;
+  --wear-mw: #A8CE74;
+  --wear-ft: #DCAE5E;
+  --wear-ww: #E8A26A;
+  --wear-bs: #FF8579;
 
-  --glass-bg: #16294F;
-  --glass-bg-strong: #122448;
-  --glass-border: #27406E;
+  --wear-fn-fill: rgba(107, 196, 148, 0.16);
+  --wear-mw-fill: rgba(168, 206, 116, 0.16);
+  --wear-ft-fill: rgba(220, 174, 94, 0.16);
+  --wear-ww-fill: rgba(232, 162, 106, 0.16);
+  --wear-bs-fill: rgba(255, 133, 121, 0.16);
 
-  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 1px 2px 0 rgba(0, 0, 0, 0.45);
-  --shadow-lg: 2px 3px 0 rgba(0, 0, 0, 0.5);
-  --shadow-xl: 3px 4px 0 rgba(0, 0, 0, 0.5);
-  --shadow-card: 0 1px 0 rgba(0, 0, 0, 0.35);
-  --shadow-card-hover: 2px 3px 0 rgba(143, 180, 255, 0.22);
+  --gradient-wear: linear-gradient(90deg, rgba(107,196,148,0.16) 0%, rgba(168,206,116,0.16) 20%, rgba(220,174,94,0.16) 45%, rgba(232,162,106,0.16) 72%, rgba(255,133,121,0.16) 100%);
 
-  --gradient-warm: linear-gradient(180deg, #16294F 0%, #122448 100%);
-  --gradient-cool: linear-gradient(180deg, #0F1F3F 0%, #122448 100%);
-  --gradient-metal: linear-gradient(135deg, #16294F 0%, #0C1A36 100%);
+  --glass-bg: #1C2230;
+  --glass-bg-strong: #171D28;
+  --glass-border: #2A3244;
 
-  --promo-bg-blue: rgba(143, 180, 255, 0.14);
-  --promo-bg-warm: rgba(240, 87, 75, 0.14);
-  --promo-bg-green: rgba(79, 178, 124, 0.14);
-  --promo-bg-purple: rgba(143, 180, 255, 0.14);
-  --promo-bg-pink: rgba(240, 87, 75, 0.14);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 8px 22px rgba(0, 0, 0, 0.45);
+
+  --promo-bg-blue: rgba(124, 155, 232, 0.12);
+  --promo-bg-warm: rgba(226, 86, 74, 0.12);
+  --promo-bg-green: rgba(79, 178, 124, 0.12);
+  --promo-bg-purple: rgba(124, 155, 232, 0.12);
+  --promo-bg-pink: rgba(226, 86, 74, 0.12);
 
   color-scheme: dark;
 }

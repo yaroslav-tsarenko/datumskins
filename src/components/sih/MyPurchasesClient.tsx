@@ -118,19 +118,18 @@ export function MyPurchasesClient() {
         return (
           <div
             key={o.id}
-            className={`relative flex flex-col gap-3 overflow-hidden border bg-[color:var(--color-bg-elevated)] px-4 py-4 sm:flex-row sm:items-center sm:gap-5 sm:px-5 ${
+            className={`relative flex flex-col gap-4 overflow-hidden rounded-[var(--radius-lg)] border bg-[color:var(--color-bg-elevated)] px-5 py-5 sm:flex-row sm:items-center sm:gap-6 ${
               highlighted
-                ? "border-[color:var(--color-accent)] shadow-[var(--shadow-md)] outline outline-1 outline-offset-[3px] outline-[color:var(--color-accent)]"
+                ? "border-[color:var(--color-accent)] shadow-[var(--shadow-md)]"
                 : "border-[color:var(--color-line)]"
             }`}
             style={o.rarityColor ? ({ ["--rarity" as string]: o.rarityColor }) : undefined}
           >
             {o.rarityColor ? (
-              <span aria-hidden className="rarity-rule absolute inset-x-0 bottom-0 h-[2px]" />
+              <span aria-hidden className="rarity-rule absolute inset-x-0 top-0 h-[3px]" />
             ) : null}
 
-            <div className="relative h-16 w-24 shrink-0 overflow-hidden border border-[color:var(--color-border)] bg-[color:var(--color-bg)]">
-              <span aria-hidden className="gridded absolute inset-0 opacity-70" />
+            <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-[color:var(--color-border)] bg-[color:var(--color-bg)]">
               {o.imageUrl ? (
                 <Image
                   src={o.imageUrl}
@@ -144,10 +143,10 @@ export function MyPurchasesClient() {
             </div>
 
             <div className="min-w-0 flex-1">
-              <div className="font-display truncate text-[15px] font-semibold tracking-[-0.015em] text-[color:var(--color-accent)]">
+              <div className="font-display truncate text-[16px] font-semibold tracking-[-0.015em] text-[color:var(--color-text)]">
                 {o.marketHashName}
               </div>
-              <div className="readout mt-1 text-[11px] text-[color:var(--color-text-tertiary)]">
+              <div className="readout mt-1.5 text-[13px] text-[color:var(--color-text-tertiary)]">
                 {format(new Date(o.createdAt), "MMM d, yyyy • HH:mm")}
                 {o.exterior && o.exterior !== "NA" ? ` • ${o.exterior}` : ""}
               </div>
@@ -157,7 +156,7 @@ export function MyPurchasesClient() {
                   href={`https://steamcommunity.com/tradeoffer/${o.senderOfferId}/`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[color:var(--color-primary-strong)] hover:underline"
+                  className="mt-2.5 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[color:var(--color-accent)] hover:underline"
                 >
                   Open trade offer
                   <ExternalLink size={12} />
@@ -165,7 +164,7 @@ export function MyPurchasesClient() {
               ) : null}
 
               {(o.status === "failed" || o.status === "refund_pending" || o.status === "rolled_back") ? (
-                <div className="mt-2 border-l-2 border-[color:var(--color-danger)] bg-[color:var(--color-danger-light)] px-2.5 py-1.5 text-xs text-[color:var(--color-danger)]">
+                <div className="mt-3 rounded-[var(--radius-md)] border-l-[3px] border-[color:var(--color-danger)] bg-[color:var(--color-danger-light)] px-3 py-2 text-[14px] text-[color:var(--color-danger)]">
                   {o.status === "failed"
                     ? "Delivery failed. A refund is being processed."
                     : o.status === "rolled_back"
@@ -180,7 +179,7 @@ export function MyPurchasesClient() {
               <Chip size="sm" color={meta.color}>
                 {meta.label}
               </Chip>
-              <span className="readout whitespace-nowrap text-[19px] font-semibold leading-none text-[color:var(--color-text)]">
+              <span className="readout whitespace-nowrap text-[20px] font-semibold leading-none text-[color:var(--color-text)]">
                 {fmt(o.price, "USD")}
               </span>
             </div>

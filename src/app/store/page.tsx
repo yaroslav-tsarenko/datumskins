@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getSihFacets } from "@/lib/sih/queries";
 import { SihCatalogClient } from "@/components/sih/SihCatalogClient";
-import { Stamp, DimLine, Dimmed, SheetNum } from "@/components/ui/Stamp";
+import { Stamp, Dimmed } from "@/components/ui/Stamp";
 import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -18,25 +18,21 @@ export default async function StorePage() {
 
   return (
     <>
-      <header className="border-b border-[color:var(--color-border)]">
-        <div className="mx-auto w-full max-w-[var(--max-width)] px-4 py-8 sm:px-6 lg:px-8">
-          <DimLine className="max-w-[18rem]" />
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <SheetNum sheet="IDX" rev="A" />
-            <span className="label">Index of sheets</span>
-          </div>
-          <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
+      <header className="drafting-field border-b border-[color:var(--color-border)]">
+        <div className="mx-auto w-full max-w-[var(--max-width)] px-5 py-12 sm:px-6 lg:px-8">
+          <span className="label">Catalogue</span>
+          <div className="mt-4 flex flex-wrap items-end justify-between gap-5">
             <div>
-              <h1 className="drawing-title text-[clamp(2rem,5vw,3.25rem)]">
+              <h1 className="drawing-title text-[clamp(2rem,4.8vw,3rem)]">
                 Every skin <Dimmed>in stock</Dimmed>
               </h1>
-              <p className="mt-4 max-w-[54ch] text-[14.5px] leading-relaxed text-[color:var(--color-text-secondary)]">
+              <p className="measure mt-5 text-[17px] leading-[1.65] text-[color:var(--color-text-secondary)]">
                 Live stock, priced in the open and delivered to your Steam inventory as a trade
-                offer. Constrain by grade, wear or budget — the URL keeps your view, so you can
-                share it exactly as you set it.
+                offer. Filter by grade, wear or budget — the URL keeps your view, so you can share
+                it exactly as you set it.
               </p>
             </div>
-            <Stamp tone="approve" tilt="right" className="mb-1">
+            <Stamp tone="approve" tilt="right" className="mb-1.5">
               Delivered via Steam trade
             </Stamp>
           </div>

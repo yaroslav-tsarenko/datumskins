@@ -7,12 +7,12 @@ import { RarityTag, rarityVars } from "@/components/ui/RarityTag";
 import { exteriorMeta } from "@/lib/skins/shared";
 
 /**
- * The schedule of items — the ruled table that accompanies a drawing set,
- * listing each item against its reference, description and quantity.
+ * The ranked list.
  *
- * Here the reference is the rank by price, the description is the skin, and
- * the right-hand column carries the figure the eye runs down. Every row is a
- * real listing: the order is the price order and nothing else.
+ * A clean white table: a rank, a thumbnail, the designation with its grade and
+ * wear, and the price at the right edge where the eye can run straight down
+ * the column. Tall rows, a 3% zebra, no vertical rules. Every row is a real
+ * listing — the order is the price order and nothing else.
  */
 export function TopTen({
   items,
@@ -24,13 +24,13 @@ export function TopTen({
   const { format } = useCurrency();
 
   return (
-    <div className={`border border-[color:var(--color-accent)] ${className ?? ""}`}>
+    <div className={`overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] ${className ?? ""}`}>
       {/* Column heads, the way a schedule labels its columns. */}
-      <div className="grid grid-cols-[3rem_1fr_auto] items-center gap-x-4 border-b border-[color:var(--color-accent)] bg-[color:var(--color-accent-tint)] px-3 py-1.5 sm:grid-cols-[3rem_4rem_1fr_auto] sm:gap-x-6">
-        <span className="microlabel text-[color:var(--color-accent)]">Ref</span>
-        <span className="microlabel hidden text-[color:var(--color-accent)] sm:block">View</span>
-        <span className="microlabel text-[color:var(--color-accent)]">Description</span>
-        <span className="microlabel text-right text-[color:var(--color-accent)]">Price</span>
+      <div className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-x-4 border-b border-[color:var(--color-border-strong)] px-4 py-3 sm:grid-cols-[2.5rem_4.5rem_1fr_auto] sm:gap-x-6">
+        <span className="microlabel">#</span>
+        <span className="microlabel hidden sm:block">Skin</span>
+        <span className="microlabel">Designation</span>
+        <span className="microlabel text-right">Price</span>
       </div>
 
       <ol>
@@ -39,47 +39,46 @@ export function TopTen({
           return (
             <li
               key={item.slug}
-              className="border-b border-[color:var(--color-border)] last:border-b-0 even:bg-[color:var(--color-bg-secondary)]/60"
+              className="border-b border-[color:var(--color-border)] last:border-b-0 even:bg-[color:var(--color-bg)]"
             >
               <Link
                 href={`/store/${item.slug}`}
                 style={rarityVars(item.rarityColor)}
-                className="grid grid-cols-[3rem_1fr_auto] items-center gap-x-4 px-3 py-3 transition-colors hover:bg-[color:var(--color-accent-tint)] sm:grid-cols-[3rem_4rem_1fr_auto] sm:gap-x-6"
+                className="grid min-h-[72px] grid-cols-[2.5rem_1fr_auto] items-center gap-x-4 px-4 py-3.5 transition-colors hover:bg-[color:var(--color-accent-tint)] sm:grid-cols-[2.5rem_4.5rem_1fr_auto] sm:gap-x-6"
               >
-                <span aria-hidden className="index-num text-[15px]">
+                <span aria-hidden className="index-num text-[16px]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
 
-                <span className="relative hidden h-12 w-16 shrink-0 border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] sm:block">
-                  <span aria-hidden className="gridded absolute inset-0 opacity-70" />
+                <span className="relative hidden h-14 w-[4.5rem] shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-[color:var(--color-border)] bg-[color:var(--color-bg)] sm:block">
                   {item.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={item.imageUrl}
                       alt=""
                       loading="lazy"
-                      className="relative h-full w-full object-contain p-1"
+                      className="relative h-full w-full object-contain p-1.5"
                     />
                   ) : null}
-                  <span className="rarity-rule absolute inset-x-0 bottom-0 h-[2px]" aria-hidden />
+                  <span className="rarity-rule absolute inset-x-0 bottom-0 h-[3px]" aria-hidden />
                 </span>
 
                 <span className="min-w-0">
                   <span className="microlabel block truncate">{item.weapon ?? item.category}</span>
-                  <span className="font-display mt-0.5 block truncate text-[15.5px] font-semibold tracking-[-0.015em] text-[color:var(--color-accent)]">
+                  <span className="font-display mt-1 block truncate text-[16px] font-semibold tracking-[-0.015em] text-[color:var(--color-text)]">
                     {item.skinName ?? item.name}
                   </span>
-                  <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                  <span className="mt-2 flex flex-wrap items-center gap-2">
                     <RarityTag rarity={item.rarity} color={item.rarityColor} />
                     {ext ? (
-                      <span className="readout text-[10px] text-[color:var(--color-text-tertiary)]">
+                      <span className="readout text-[13px] text-[color:var(--color-text-tertiary)]">
                         {ext.short} · {ext.floatMin.toFixed(2)}–{ext.floatMax.toFixed(2)}
                       </span>
                     ) : null}
                   </span>
                 </span>
 
-                <span className="readout shrink-0 text-right text-[clamp(1rem,2.6vw,1.4rem)] font-semibold leading-none text-[color:var(--color-text)]">
+                <span className="readout shrink-0 text-right text-[clamp(1.05rem,2.4vw,1.35rem)] font-semibold leading-none text-[color:var(--color-text)]">
                   {format(item.price, "USD")}
                 </span>
               </Link>

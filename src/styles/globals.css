@@ -3,11 +3,11 @@
 @import "./animations.css";
 
 /*
- * Tailwind v4 — CSS-first config.
- * Exposes the "Blueprint Works" tokens from variables.css as Tailwind theme
- * variables so `bg-paper`, `text-ink`, `border-line`, `font-display` and
- * `font-mono` all resolve from one source of truth. Nothing in a component
- * hardcodes a colour, a radius or a rule weight.
+ * Tailwind v4 - CSS-first config.
+ * Exposes the "Blueprint Works" revision-B tokens from variables.css as
+ * Tailwind theme variables, so `bg-paper`, `text-ink`, `border-line`,
+ * `font-display` and `font-mono` all resolve from one source of truth.
+ * Nothing in a component hardcodes a colour, a radius or a rule weight.
  */
 
 @theme {
@@ -16,103 +16,103 @@
   --font-serif: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
-  /* Paper stock */
-  --color-bone: #F6F5F0;
-  --color-paper: #FDFCF8;
-  --color-cream: #EFEDE6;
-  --color-surface: #FDFCF8;
-  --color-cyanotype: #122448;
+  /* Paper */
+  --color-paper: #FFFFFF;
+  --color-bone: #F8F8F5;
+  --color-cream: #F1F1EC;
+  --color-surface: #FFFFFF;
+  --color-nightshift: #151A24;
 
   /* Ink */
-  --color-ink: #232830;
-  --color-ink-2: #6E7484;
-  --color-ink-3: #9AA0AE;
+  --color-ink: #22262E;
+  --color-ink-2: #5C626E;
+  --color-ink-3: #666D79;
   --color-blueprint: #1D3F8F;
 
   /* Inspection red */
-  --color-primary: #D6382E;
-  --color-primary-strong: #C22C22;
-  --color-primary-hover: #A82219;
-  --color-primary-tint: #FAE0DE;
+  --color-primary: #C7342B;
+  --color-primary-strong: #C7342B;
+  --color-primary-hover: #A62A22;
+  --color-primary-tint: #FBEAE8;
   --color-primary-fg: #FFFFFF;
 
-  /* Blueprint ink as the accent */
+  /* Blueprint blue as the accent */
   --color-accent: #1D3F8F;
   --color-accent-hover: #17347A;
-  --color-accent-tint: #E4EAF7;
+  --color-accent-tint: #EDF1FA;
   --color-accent-fg: #FFFFFF;
 
   /* Approval green */
-  --color-teal: #2E8B57;
-  --color-teal-hover: #256F46;
-  --color-teal-tint: #E2F1E8;
+  --color-teal: #24774A;
+  --color-teal-hover: #1B5C39;
+  --color-teal-tint: #E6F2EB;
 
   /* Trade-lock amber */
-  --color-gold: #DB9C3B;
-  --color-gold-hover: #C1862B;
-  --color-gold-tint: #FAEEDA;
-  --color-bronze: #DB9C3B;
-  --color-bronze-hover: #C1862B;
-  --color-bronze-tint: #FAEEDA;
+  --color-gold: #8A5E12;
+  --color-gold-hover: #6E4B0E;
+  --color-gold-tint: #FBF0DC;
+  --color-bronze: #8A5E12;
+  --color-bronze-hover: #6E4B0E;
+  --color-bronze-tint: #FBF0DC;
 
-  --color-coral: #D6382E;
-  --color-coral-hover: #C22C22;
-  --color-coral-tint: #FAE0DE;
+  --color-coral: #C7342B;
+  --color-coral-hover: #A62A22;
+  --color-coral-tint: #FBEAE8;
   --color-violet: #1D3F8F;
   --color-violet-hover: #17347A;
-  --color-violet-tint: #E4EAF7;
+  --color-violet-tint: #EDF1FA;
 
   /* Lines */
-  --color-line: #CBD2E2;
-  --color-line-strong: #8794B4;
+  --color-line: #E5E5DF;
+  --color-line-strong: #C4C4BB;
 
   /* Status */
-  --color-success: #2E8B57;
-  --color-success-tint: #E2F1E8;
-  --color-warning: #B57415;
-  --color-warning-tint: #FAEEDA;
-  --color-danger: #C0392F;
-  --color-danger-tint: #FAE0DE;
+  --color-success: #24774A;
+  --color-success-tint: #E6F2EB;
+  --color-warning: #8A5E12;
+  --color-warning-tint: #FBF0DC;
+  --color-danger: #C7342B;
+  --color-danger-tint: #FBEAE8;
 
   /* CS2 rarity */
-  --color-rarity-consumer: #7C8798;
-  --color-rarity-industrial: #3F72B0;
-  --color-rarity-milspec: #3A4FCB;
-  --color-rarity-restricted: #6F33D8;
-  --color-rarity-classified: #B01BC0;
-  --color-rarity-covert: #C4342A;
-  --color-rarity-gold: #B08B0C;
-  --color-rarity-contraband: #A9791F;
+  --color-rarity-consumer: #5F6A78;
+  --color-rarity-industrial: #2F5F97;
+  --color-rarity-milspec: #3040B4;
+  --color-rarity-restricted: #5C27B8;
+  --color-rarity-classified: #96169F;
+  --color-rarity-covert: #B02A21;
+  --color-rarity-gold: #8A6A05;
+  --color-rarity-contraband: #8A600F;
 
-  /* Corners — ruled, not rounded */
-  --radius-sm: 0px;
-  --radius-md: 1px;
-  --radius-lg: 2px;
-  --radius-xl: 2px;
-  --radius-2xl: 3px;
+  /* Corners - softened, still not uniform */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
 
   --container-content: 1360px;
 
   /* Type scale */
-  --text-eyebrow: 0.6875rem;
-  --text-eyebrow--line-height: 1.2;
-  --text-eyebrow--letter-spacing: 0.22em;
+  --text-label: 0.75rem;                 /* 12px - the micro-label floor */
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.14em;
 
   --text-display: 3.25rem;
-  --text-display--line-height: 1.0;
-  --text-display--letter-spacing: -0.02em;
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.022em;
 
   --text-editorial: 2.25rem;
-  --text-editorial--line-height: 1.04;
-  --text-editorial--letter-spacing: -0.015em;
+  --text-editorial--line-height: 1.1;
+  --text-editorial--letter-spacing: -0.018em;
 }
 
-/* Drafting (light) is the default identity, so `light:` utilities match the
-   root and `dark:` is the opt-in Night Shift theme. */
+/* Studio daylight is the default identity, so `light:` matches the root and
+   `dark:` is the opt-in Night Shift theme. */
 @custom-variant light (&:where(:root, :root *, .light, .light *, [data-theme="light"], [data-theme="light"] *));
 @custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
 
-/* ── Base layer ──────────────────────────────────────────────────────── */
+/* == Base ============================================================== */
 
 *,
 *::before,
@@ -124,6 +124,7 @@ html {
   scroll-behavior: smooth;
   color-scheme: light;
   overflow-anchor: none;
+  -webkit-text-size-adjust: 100%;
 }
 
 html[data-theme="dark"],
@@ -131,22 +132,12 @@ html.dark {
   color-scheme: dark;
 }
 
-/* The drafting board: paper stock plus the millimetre grid, minors every
-   step and majors every eight. The grid is part of the surface, not a
-   decoration, so it lives on the body and every band inherits it. */
+/* Clean paper. The grid is NOT here - it belongs to `.drafting-field`. */
 body {
   font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
   background-color: var(--color-bg);
-  background-image:
-    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
-    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
-  background-size:
-    calc(var(--grid-step) * 8) calc(var(--grid-step) * 8),
-    calc(var(--grid-step) * 8) calc(var(--grid-step) * 8),
-    var(--grid-step) var(--grid-step),
-    var(--grid-step) var(--grid-step);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -167,133 +158,36 @@ img {
   color: var(--color-accent-fg);
 }
 
-::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar { width: 12px; height: 12px; }
 ::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
-::-webkit-scrollbar-thumb { background: var(--color-border-strong); }
-::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-tertiary); }
 
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
-/* ── Layout helpers ──────────────────────────────────────────────────── */
+/* == Layout ============================================================ */
 
-.section-padding { padding: 3rem 1rem; }
-@media (min-width: 768px) { .section-padding { padding: 4rem 1.5rem; } }
-@media (min-width: 1024px) { .section-padding { padding: 5rem 2rem; } }
+/* Roomier than revision A by about a quarter. */
+.section-padding { padding: var(--pad-section-y) 1.25rem; }
+@media (min-width: 768px) { .section-padding { padding: 5rem 1.75rem; } }
+@media (min-width: 1024px) { .section-padding { padding: var(--pad-section-y-lg) 2rem; } }
 
 .section-container { max-width: var(--max-width); margin: 0 auto; }
 
-/* ── The drawing voice ───────────────────────────────────────────────── */
+/* An editorial measure. Long-form copy never runs past ~70ch. */
+.measure { max-width: 68ch; }
+.measure-tight { max-width: 56ch; }
 
-/* Drawing label — wide-tracked uppercase in blueprint ink. "SECTION A-A",
-   "SPECIFICATIONS", "SHT 04 / REV B". */
-.label,
-.microlabel,
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-}
-.microlabel { font-size: 0.625rem; color: var(--color-text-tertiary); }
+/* == The drawing zones ================================================= */
 
-/* Headings are drawn in blueprint ink, not black. */
-.drawing-title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.02;
-  color: var(--color-accent);
-}
-
-.section-title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
-  line-height: 1.04;
-  letter-spacing: -0.02em;
-  color: var(--color-accent);
-}
-
-.section-subtitle {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary);
-  margin-top: 0.625rem;
-  max-width: 58ch;
-  line-height: 1.65;
-}
-
-/* Every number on this site is an annotation: mono, tabular, tight. */
-.readout,
-.spec-value {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-}
-.tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
-
-/* ── Sheet furniture ─────────────────────────────────────────────────── */
-
-/* The sheet: bright paper inside a blueprint rule. Featured sheets take a
-   double rule, drawn with an outline rather than a second element. */
-.sheet,
-.panel {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-.sheet-featured {
-  border: 1px solid var(--color-accent);
-  outline: 1px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-/* Corner registration marks — four crop corners drawn in blueprint ink. */
-.reg-marks { position: relative; }
-.reg-marks::before,
-.reg-marks::after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border: 1px solid var(--color-blueprint-soft);
-  pointer-events: none;
-}
-.reg-marks::before { top: 5px; left: 5px; border-right: 0; border-bottom: 0; }
-.reg-marks::after { bottom: 5px; right: 5px; border-left: 0; border-top: 0; }
-
-/* The cyanotype band — a plate printed the classic way round. Pins the token
-   set so the band renders identically in both themes. */
-.cyanotype {
-  --color-bg: #122448;
-  --color-bg-elevated: #16294F;
-  --color-bg-secondary: #0F1F3F;
-  --color-bg-tertiary: #0C1A36;
-  --color-text: #D9E6FF;
-  --color-text-secondary: #93A6CC;
-  --color-text-tertiary: #8DA2CC;
-  --color-text-inverse: #122448;
-  --color-border: #27406E;
-  --color-border-strong: #4A6AA6;
-  --color-accent: #8FB4FF;
-  --color-accent-tint: rgba(143, 180, 255, 0.16);
-  --color-accent-fg: #0B1834;
-  --color-blueprint: #8FB4FF;
-  --color-blueprint-soft: #5C7FC4;
-  --color-primary: #F0574B;
-  --color-primary-strong: #E2483C;
-  --color-primary-hover: #F5786E;
-  --color-primary-fg: #FFFFFF;
-  --color-primary-tint: rgba(240, 87, 75, 0.16);
-  --color-success: #4FB27C;
-  --color-warning: #E4B25C;
-  --color-gold: #E4B25C;
-  --grid-minor: rgba(217, 230, 255, 0.05);
-  --grid-major: rgba(217, 230, 255, 0.085);
-  background-color: var(--color-bg);
-  color: var(--color-text);
+/*
+ * `.drafting-field` is the ONLY thing in the system that carries the
+ * millimetre grid, and it is allowed in exactly three places: the hero
+ * backdrop, section header bands, and the item-page render stage. The grid
+ * sits at <=4.5% and must never appear behind a paragraph.
+ */
+.drafting-field {
   background-image:
     linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
@@ -306,29 +200,143 @@ img {
     var(--grid-step) var(--grid-step);
 }
 
-/* A patch of paper that carries the grid on its own (cards, render stages). */
-.gridded {
-  background-image:
-    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
-  background-size: var(--grid-step) var(--grid-step);
+/* Corner crop marks. Hero and footer flourish only. */
+.reg-marks { position: relative; }
+.reg-marks::before,
+.reg-marks::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--color-blueprint-soft);
+  pointer-events: none;
+  opacity: 0.8;
+}
+.reg-marks::before { top: 8px; left: 8px; border-right: 0; border-bottom: 0; }
+.reg-marks::after { bottom: 8px; right: 8px; border-left: 0; border-top: 0; }
+
+/* == The voice ========================================================= */
+
+/*
+ * Micro-labels: the one place blueprint blue is allowed to be type. Floor of
+ * 12px at weight 500, where #1D3F8F clears 9.1:1 on paper. Anything longer
+ * than a couple of words is not a label and must be charcoal.
+ */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--color-accent);
 }
 
-/* Hatching — 45° section lines. Empty states and inactive zones. */
+/* The quiet sibling: same shape, charcoal-muted, for labels that sit in a
+   busy area where a second blue would be one blue too many. */
+.microlabel {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--color-text-secondary);
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--color-accent);
+}
+
+/* Headings are charcoal. The blue shows up as the rule beneath them. */
+.drawing-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--color-text);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* The brand thread: a short blueprint rule under a section title. */
+.title-rule {
+  display: block;
+  width: 3rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.75rem;
+  max-width: 68ch;
+  line-height: 1.65;
+}
+
+/* Data values - mono, tabular, charcoal. Never a sentence. */
+.readout,
+.spec-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+/* == Surfaces ========================================================== */
+
+/* The card: white, softly cornered, one hairline, a short shadow. */
+.sheet,
+.panel {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* The double rule survives here and nowhere else. */
+.sheet-featured {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-accent);
+  outline: 1px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+/* A thin vellum divider band - the only job the tint has left. */
+.vellum-band {
+  background: var(--color-bg-secondary);
+  border-block: 1px solid var(--color-border);
+}
+
+/* Hatching, kept for genuinely empty fields only - never behind small text. */
 .hatch {
   background-image: repeating-linear-gradient(
     45deg,
     var(--color-blueprint-soft) 0,
     var(--color-blueprint-soft) 1px,
     transparent 1px,
-    transparent 7px
+    transparent 9px
   );
-  opacity: 0.35;
+  opacity: 0.22;
 }
 
-/* ── Dimension lines ─────────────────────────────────────────────────── */
+/* == Dimension lines =================================================== */
 
-/* A ruled extent with tick ends — used under headings and beside values. */
 .dim-line {
   position: relative;
   height: 1px;
@@ -346,129 +354,140 @@ img {
 .dim-line::before { left: 0; }
 .dim-line::after { right: 0; }
 
-/* A word under dimension — this identity's marker move. Where a louder brand
-   would highlight a word, a drawing dimensions it: the word in inspection red
-   with a ticked extent ruled beneath. Built from one pseudo-element so the
-   rule and both tick ends survive any line wrap of the heading around it. */
+/*
+ * A word under dimension - the marker move, now in blueprint blue rather than
+ * red so the red is reserved for actions. The word itself stays charcoal; only
+ * the rule beneath it is blue, so no reading text is ever coloured.
+ */
 .dim-word {
   position: relative;
-  color: var(--color-primary);
   white-space: nowrap;
+  color: var(--color-text);
 }
 .dim-word::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -0.17em;
-  height: 7px;
+  bottom: -0.24em;
+  height: 8px;
   pointer-events: none;
   background:
-    linear-gradient(currentColor, currentColor) left bottom / 1px 7px no-repeat,
-    linear-gradient(currentColor, currentColor) right bottom / 1px 7px no-repeat,
-    linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat;
+    linear-gradient(var(--color-accent), var(--color-accent)) left bottom / 1px 8px no-repeat,
+    linear-gradient(var(--color-accent), var(--color-accent)) right bottom / 1px 8px no-repeat,
+    linear-gradient(var(--color-accent), var(--color-accent)) left bottom / 100% 2px no-repeat;
 }
 
-/* A wear zone on the diagram: 45° section hatching in the zone's own ink,
-   boxed when it is the item's own zone. Drawn in CSS so the hatch keeps its
-   angle at any width. */
-.wear-zone {
-  background-image: repeating-linear-gradient(
-    45deg,
-    var(--zone) 0,
-    var(--zone) 1.4px,
-    transparent 1.4px,
-    transparent 5px
-  );
+/*
+ * Leader lines. Decorative moments only - the hero and the item page, three
+ * at most, and never the sole home of a value. Drawn once on mount; under
+ * reduced motion they are simply already there.
+ */
+.leader {
+  stroke: var(--color-blueprint-soft);
+  stroke-width: 1.5;
+  stroke-dasharray: var(--leader-len, 200);
+  stroke-dashoffset: var(--leader-len, 200);
+  animation: leaderDraw 520ms var(--ease-out-expo) 260ms forwards;
 }
-.wear-zone-active { box-shadow: inset 0 0 0 1px var(--zone); }
+.leader-shown { stroke-dashoffset: 0; animation: none; }
 
-/* The wear gauge input: a neutral ruled track with a square inspection-red
-   pointer. The colour lives in the diagram above it, never in the track. */
+/* == Wear gauge ======================================================== */
+
+/*
+ * Zones are soft tinted fills, not hatching: at gauge size, 45-degree hatch
+ * shimmers and tires the eye within a minute.
+ */
+.wear-zone { background: var(--zone-fill); }
+.wear-zone-active { box-shadow: inset 0 0 0 1.5px var(--zone-ink); }
+
 .spec-slider {
   appearance: none;
   -webkit-appearance: none;
+  background: transparent;
+  height: 22px;
+}
+.spec-slider::-webkit-slider-runnable-track {
+  height: 2px;
   background: var(--color-border-strong);
-  height: 1px;
+  border-radius: 2px;
+}
+.spec-slider::-moz-range-track {
+  height: 2px;
+  background: var(--color-border-strong);
+  border-radius: 2px;
 }
 .spec-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: 16px;
-  width: 3px;
-  border-radius: 0;
+  margin-top: -10px;
+  height: 22px;
+  width: 4px;
+  border-radius: 2px;
   background: var(--color-primary);
   border: 0;
   cursor: ew-resize;
 }
 .spec-slider::-moz-range-thumb {
-  height: 16px;
-  width: 3px;
-  border-radius: 0;
+  height: 22px;
+  width: 4px;
+  border-radius: 2px;
   background: var(--color-primary);
   border: 0;
   cursor: ew-resize;
 }
 
-/* A leader line: a dot at the datum, a rule out to the annotation. On hover
-   the parent draws it in. */
-.leader {
-  stroke: var(--color-blueprint-soft);
-  stroke-width: 1;
-  stroke-dasharray: var(--leader-len, 200);
-  stroke-dashoffset: var(--leader-len, 200);
-  transition: stroke-dashoffset 320ms var(--ease-out-expo);
-}
-.group:hover .leader,
-.leader-shown { stroke-dashoffset: 0; }
+/* == Stamps ============================================================ */
 
-/* ── Stamps ──────────────────────────────────────────────────────────── */
-
-/* A rubber stamp: double rule, wide tracking, rotated a few degrees, with
-   the edge knocked slightly out of true so it reads as pressed by hand. */
+/*
+ * Solid fill, fixed comfortable size, one per card. The tilt is kept - it is
+ * the charm - but the distressed double edge is gone so it renders crisply at
+ * any zoom and always clears contrast at its own size.
+ */
 .stamp {
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
-  padding: 0.28em 0.5em 0.24em;
-  border: 1.5px solid currentColor;
-  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 22%, transparent);
+  padding: 0.34em 0.6em;
+  border-radius: var(--radius-md);
   font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
   text-transform: uppercase;
-  transform: rotate(-3deg);
-  color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-bg-elevated) 82%, transparent);
+  transform: rotate(-2.5deg);
+  background: var(--stamp-inspection-bg);
+  color: #FFFFFF;
+  white-space: nowrap;
 }
-.stamp-approve { color: var(--color-teal); }
-.stamp-hold { color: var(--color-gold); }
-.stamp-ink { color: var(--color-accent); }
-.stamp-right { transform: rotate(3deg); }
+.stamp-approve { background: var(--stamp-approve-bg); color: #FFFFFF; }
+.stamp-hold { background: var(--stamp-hold-bg); color: #FFFFFF; }
+.stamp-ink { background: var(--color-accent); color: var(--color-accent-fg); }
+.stamp-right { transform: rotate(2.5deg); }
 .stamp-flat { transform: none; }
 
-/* ── Inputs ──────────────────────────────────────────────────────────── */
+/* == Inputs ============================================================ */
 
 .well {
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
-  transition: border-color 140ms var(--ease-out-expo), box-shadow 140ms var(--ease-out-expo);
+  transition: border-color var(--dur-fast) var(--ease-out-expo),
+    box-shadow var(--dur-fast) var(--ease-out-expo);
 }
 .well:focus-within {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 2px var(--color-accent-tint);
+  box-shadow: 0 0 0 3px var(--color-accent-tint);
 }
 
-/* Keyboard focus — an inspection-red bracket. Name kept from the previous
-   identity so no call site has to change. */
+/* Keyboard focus. Name kept stable from the previous token set. */
 .focus-amber:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent);
 }
 
-/* A sheet lifting off the board: 2px, no blur bloom. */
+/* A gentle lift - no translation drama, no border colour flash. */
 .card-lift {
   transition: transform var(--dur-base) var(--ease-out-expo),
     box-shadow var(--dur-base) var(--ease-out-expo),
@@ -476,30 +495,56 @@ img {
 }
 @media (hover: hover) {
   .card-lift:hover {
-    transform: translate3d(-1px, -2px, 0);
-    border-color: var(--color-accent);
+    transform: translate3d(0, -3px, 0);
+    border-color: var(--color-border-hover);
     box-shadow: var(--shadow-card-hover);
   }
 }
 
-/* ── Rarity — an index chip plus a ruled line under the render ────────── */
+/* == Rarity ============================================================ */
 
-.rarity-rule { background: var(--rarity, var(--rarity-consumer-raw)); }
-.rarity-spine { background: var(--rarity, var(--rarity-consumer-raw)); }
-.rarity-strip { background: var(--rarity, var(--rarity-consumer-raw)); }
+.rarity-rule,
+.rarity-spine,
+.rarity-strip {
+  /* The raw Valve hue, pulled a fifth of the way toward the page ink so the
+     pale grades (gold, contraband) read as a rule rather than a highlighter. */
+  background: color-mix(in srgb, var(--rarity, var(--rarity-consumer-raw)) 82%, var(--color-text) 18%);
+}
 
-/* ── Sitewide voice adapters ─────────────────────────────────────────── */
+/* == Tables ============================================================ */
+
+/* The parts list. Tall rows, 3% zebra, sticky head, no vertical rules. */
+.parts-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.parts-table thead th {
+  position: sticky;
+  top: var(--parts-sticky-top, 0px);
+  z-index: 2;
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border-strong);
+  text-align: left;
+  white-space: nowrap;
+}
+.parts-table tbody tr { border-bottom: 1px solid var(--color-border); }
+.parts-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--color-text) 3%, transparent);
+}
+.parts-table tbody tr:hover { background: var(--color-accent-tint); }
+.parts-table td,
+.parts-table th { padding: 0.75rem 1rem; }
+.parts-table tbody td { height: 48px; }
+
+/* == Sitewide voice adapters =========================================== */
 
 /* Surfaces that were not individually art-directed still speak the language:
-   the display face draws in blueprint ink, and nothing is a pill. */
+   the display face sets headings, and nothing is a pill. */
 .font-display,
 .font-serif {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
 }
-.rounded-full { border-radius: var(--radius-lg); }
+.rounded-full { border-radius: var(--radius-md); }
 
-/* ── Legacy shims from the previous identities ───────────────────────── */
+/* == Legacy shims from the previous identities ========================= */
 .glass,
 .glass-strong {
   background: var(--color-bg-elevated);
@@ -518,80 +563,56 @@ img {
 .reticle::before,
 .reticle::after { content: none; }
 .glow-amber, .glow-azure, .glow-violet, .glow-gold { box-shadow: var(--shadow-card); }
-.gradient-text { color: var(--color-accent); background: none; }
-.heat-plate { background: var(--color-primary); color: #FFFFFF; padding-inline: 0.1em; }
-.poster { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
-.warm-dots, .retail-dots, .tech-grid, .concrete {
-  background-image:
-    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
-  background-size: var(--grid-step) var(--grid-step);
-}
-.tape-rule { height: 1px; background: var(--color-accent); border: 0; }
-.tape-rule-black { height: 1px; background: var(--color-text); border: 0; }
+.gradient-text { color: var(--color-text); background: none; }
+.heat-plate { background: var(--color-primary); color: #FFFFFF; padding-inline: 0.12em; border-radius: var(--radius-sm); }
+.poster { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+.warm-dots, .retail-dots, .tech-grid, .concrete { background-image: none; }
+.tape-rule { height: 3px; width: 3rem; border-radius: 2px; background: var(--color-accent); border: 0; }
+.tape-rule-black { height: 1px; background: var(--color-border); border: 0; }
 .index-num {
   font-family: var(--font-mono);
   font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--color-blueprint-soft);
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
   font-variant-numeric: tabular-nums;
 }
 .sticker { display: inline-flex; }
-.ticker-track { display: inline-flex; min-width: 200%; animation: marquee 46s linear infinite; }
+.ticker-track { display: inline-flex; min-width: 200%; animation: marquee 52s linear infinite; }
 .ticker:hover .ticker-track,
 .ticker:focus-within .ticker-track { animation-play-state: paused; }
+.wear-bar, .wear-slider { background: var(--gradient-wear); }
 
-/* ── Wear diagram ────────────────────────────────────────────────────── */
-.wear-bar { background: var(--gradient-wear); }
-.wear-slider { background: var(--gradient-wear); }
-.wear-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 18px;
-  width: 6px;
-  border-radius: 0;
-  background: var(--color-primary);
-  border: 0;
-  cursor: ew-resize;
-}
-.wear-slider::-moz-range-thumb {
-  height: 18px;
-  width: 6px;
-  border-radius: 0;
-  background: var(--color-primary);
-  border: 0;
-  cursor: ew-resize;
-}
-
-/* ── Skeletons — an unprinted sheet ──────────────────────────────────── */
+/* == Skeletons ========================================================= */
 .skeleton {
   position: relative;
   overflow: hidden;
   background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
 }
 .skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent);
-  animation: skeleton-shimmer 1.5s infinite;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-text) 5%, transparent), transparent);
+  animation: skeleton-shimmer 1.6s infinite;
 }
 @keyframes skeleton-shimmer { 100% { transform: translateX(100%); } }
 
 .editorial-heading {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 1.04;
+  line-height: 1.1;
 }
 
-.bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
+.bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .bento > .col-2 { grid-column: span 2; }
 .bento > .row-2 { grid-row: span 2; }
 @media (max-width: 900px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .bento { grid-template-columns: 1fr; } .bento > .col-2 { grid-column: span 1; } }
 
+/* == Reduced motion: everything pre-drawn and static ==================== */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -603,5 +624,7 @@ img {
   }
   .card-lift:hover { transform: none; }
   .ticker-track { animation: none; }
-  .leader { stroke-dashoffset: 0; }
+  .leader { stroke-dashoffset: 0; animation: none; }
+  .stamp { transform: rotate(-2.5deg); }
+  .stamp-right { transform: rotate(2.5deg); }
 }

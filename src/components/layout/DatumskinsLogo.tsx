@@ -2,9 +2,12 @@
  * Datumskins mark — a drafting compass mid-sweep.
  *
  * Pivot, two legs, the needle point marked with an inspection-red datum dot
- * and the sweep it has just drawn dashed in beneath. It is the instrument that
+ * and the arc it has just drawn dashed in beneath. It is the instrument that
  * makes a drawing, which is what this store does to a skin. Drawn on a 32×32
  * grid so it stays crisp down to 16px. Original artwork — no game assets.
+ *
+ * The blue here is one of the places the brand thread is allowed to be solid
+ * colour: the logo, the active nav rule, section-title rules, and icon strokes.
  */
 export function DatumskinsMark({
   size = 28,
@@ -26,7 +29,7 @@ export function DatumskinsMark({
       <path
         d="M9 24.5A20 20 0 0 0 23 24.5"
         stroke="var(--color-blueprint-soft)"
-        strokeWidth="1.2"
+        strokeWidth="1.3"
         strokeDasharray="2.6 2.2"
         strokeLinecap="round"
       />
@@ -50,9 +53,10 @@ export function DatumskinsMark({
 }
 
 /**
- * The wordmark. "Datum" in blueprint ink, "skins" in drafting charcoal, with
- * the whole extent dimensioned underneath by a ticked rule — the identity in
- * miniature: a measured thing, labelled.
+ * The wordmark. "Datum" in charcoal at semibold, "skins" in the same charcoal
+ * at regular — the contrast is weight, not colour, so the name reads as text.
+ * The one blue element is the short rule beneath it: the same rule that marks
+ * an active nav tab and underlines a section title.
  *
  * `size` is the cap height in px; everything else scales from it.
  */
@@ -66,17 +70,18 @@ export function DatumskinsLogo({
   return (
     <span className={`inline-flex items-center gap-2.5 ${className ?? ""}`}>
       <DatumskinsMark size={size * 1.4} />
-      <span className="inline-flex flex-col gap-[0.22em]">
+      <span className="inline-flex flex-col gap-[0.24em]">
         <span
-          className="font-display inline-flex items-baseline leading-none"
-          style={{ fontSize: size, fontWeight: 700 }}
+          className="font-display inline-flex items-baseline leading-none text-[color:var(--color-text)]"
+          style={{ fontSize: size, fontWeight: 600 }}
         >
-          <span className="text-[color:var(--color-accent)]">Datum</span>
-          <span className="text-[color:var(--color-text)]" style={{ fontWeight: 400 }}>
-            skins
-          </span>
+          Datum
+          <span style={{ fontWeight: 400 }}>skins</span>
         </span>
-        <span aria-hidden className="dim-line block w-full" />
+        <span
+          aria-hidden
+          className="block h-[2px] w-full rounded-[1px] bg-[color:var(--color-accent)]"
+        />
       </span>
     </span>
   );

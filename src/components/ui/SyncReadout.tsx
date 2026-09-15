@@ -9,8 +9,8 @@ function pad(n: number) {
 }
 
 /**
- * A dimensioned countdown — mono digits on a ruled plate, the way a drawing
- * annotates a measured quantity.
+ * A dimensioned countdown — mono digits on a quiet tinted chip, the way a
+ * drawing annotates a measured quantity.
  *
  * It only ever counts to a real deadline supplied by the caller: either an
  * absolute `target`, or a rolling window such as the catalogue's own cache
@@ -48,9 +48,9 @@ export function SyncReadout({
   }, [target, everySeconds]);
 
   const tones: Record<string, string> = {
-    ink: "border-[color:var(--color-accent)] text-[color:var(--color-accent)]",
-    inspection: "border-[color:var(--color-primary)] text-[color:var(--color-primary)]",
-    quiet: "border-[color:var(--color-border-strong)] text-[color:var(--color-text-secondary)]",
+    ink: "border-[color:var(--color-accent)] bg-[color:var(--color-accent-tint)] text-[color:var(--color-text)]",
+    inspection: "border-[color:var(--color-primary)] bg-[color:var(--color-primary-tint)] text-[color:var(--color-text)]",
+    quiet: "border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] text-[color:var(--color-text-secondary)]",
   };
 
   // Server render and first paint must agree, so digits appear only once the
@@ -68,7 +68,7 @@ export function SyncReadout({
       aria-live="off"
       className={twMerge(
         clsx(
-          "inline-flex items-center gap-2 border px-2 py-1 font-mono text-[10px] font-semibold uppercase leading-none tracking-[0.16em]",
+          "inline-flex items-center gap-2 rounded-[var(--radius-sm)] border px-2.5 py-1.5 font-mono text-[12px] font-medium uppercase leading-none tracking-[0.1em]",
           tones[tone],
           className,
         ),

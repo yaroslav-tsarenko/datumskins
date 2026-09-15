@@ -3,12 +3,16 @@ import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
 /**
- * A callout — the leader line that connects a point on the drawing to its
- * annotation: a dot at the datum, a thin rule out to a horizontal shoulder,
- * and the note sitting on the shoulder.
+ * A callout — a dot at the datum, a thin leader out to a shoulder, and a short
+ * note sitting on it.
  *
- * The leader is drawn by default — a drawing does not hide its own linework —
- * and redraws itself when the parent (marked `group`) is hovered.
+ * Revision B demotes this to what it always should have been: **decoration**.
+ * It appears only in the hero and on the item page, at most three to a view,
+ * it draws itself in once on mount and then stays put, and — the rule that
+ * matters — every value it points at is ALSO printed in the title block below.
+ * Nothing important is allowed to live at the end of a thin line.
+ *
+ * The note is charcoal at 12px, not blue, because it is still text.
  */
 export function Callout({
   children,
@@ -25,20 +29,24 @@ export function Callout({
   const path = side === "right" ? "M2 26 L26 4 L64 4" : "M62 26 L38 4 L0 4";
   return (
     <span
+      aria-hidden
       className={twMerge(
-        clsx("pointer-events-none inline-flex items-start gap-1", side === "left" && "flex-row-reverse", className),
+        clsx(
+          "pointer-events-none inline-flex select-none items-start gap-1.5",
+          side === "left" && "flex-row-reverse",
+          className,
+        ),
       )}
     >
       <svg
         viewBox="0 0 64 28"
         className={twMerge(clsx("h-7 w-16 shrink-0 overflow-visible", lineClassName))}
-        aria-hidden
         fill="none"
       >
-        <circle cx={side === "right" ? 2 : 62} cy="26" r="2" fill="var(--color-blueprint-soft)" />
-        <path d={path} className="leader leader-shown" style={{ ["--leader-len" as string]: 110 }} />
+        <circle cx={side === "right" ? 2 : 62} cy="26" r="2.5" fill="var(--color-accent)" />
+        <path d={path} className="leader" style={{ ["--leader-len" as string]: 110 }} />
       </svg>
-      <span className="readout -mt-0.5 whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-[color:var(--color-text-secondary)]">
+      <span className="-mt-1 whitespace-nowrap font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-[color:var(--color-text-secondary)]">
         {children}
       </span>
     </span>

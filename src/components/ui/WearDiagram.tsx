@@ -4,19 +4,16 @@ import clsx from "clsx";
 import { EXTERIORS, exteriorMeta, type ExteriorCode } from "@/lib/skins/shared";
 
 /**
- * The wear diagram — the float scale drawn as a proper engineering axis.
+ * The wear gauge — the float scale drawn as a real 0.00–1.00 axis.
  *
- * A ruled 0.00–1.00 extent with the FN/MW/FT/WW/BS zones hatched and labelled,
- * the item's own zone boxed, and — when a true float is known — a pointer at
- * the exact value.
- *
- * Drawn with CSS boxes rather than a stretched SVG on purpose: a diagram this
- * wide and this short would shear its 45° hatching and its labels out of shape
- * if it were scaled, and a drawing that lies about its own angles is not worth
- * printing.
+ * Revision B enlarges it and calms it: the FN/MW/FT/WW/BS zones are **soft
+ * tinted fills** rather than 45° hatching (hatching shimmers and strains the
+ * eye at gauge size), the axis text is charcoal rather than blue, and the
+ * pointer is a thick 4px inspection-red bar you can actually find.
  *
  * The catalogue stores an exterior, not a per-item float, so the default
- * drawing annotates the zone's real range rather than inventing a decimal.
+ * drawing brackets the zone's real range instead of inventing a decimal — and
+ * says so in the caption rather than implying precision it does not have.
  */
 
 const ZONE_INK: Record<string, string> = {
@@ -27,7 +24,15 @@ const ZONE_INK: Record<string, string> = {
   BS: "var(--wear-bs)",
 };
 
-/** The wear zone's own ink — for an exterior code shown outside the diagram. */
+const ZONE_FILL: Record<string, string> = {
+  FN: "var(--wear-fn-fill)",
+  MW: "var(--wear-mw-fill)",
+  FT: "var(--wear-ft-fill)",
+  WW: "var(--wear-ww-fill)",
+  BS: "var(--wear-bs-fill)",
+};
+
+/** The wear zone's own ink — for an exterior code shown outside the gauge. */
 export function wearInk(code: string | null | undefined): string {
   if (!code) return "var(--color-text-secondary)";
   return ZONE_INK[code] ?? "var(--color-text-secondary)";
@@ -46,14 +51,14 @@ export function WearDiagram({
   /** Exact float, when the source provides one. */
   value?: number | null;
   className?: string;
-  /** Drops the zone labels — for dense rows. */
+  /** Card size: shorter band, no tick scale. Labels still shown by default. */
   compact?: boolean;
-  /** Force the zone labels on or off; defaults to on unless `compact`. */
+  /** Force the zone labels on or off; off in compact, where FN and MW collide. */
   labels?: boolean;
 }) {
   const meta = exteriorMeta(exterior);
   const showLabels = labels ?? !compact;
-  const bandH = compact ? 7 : 10;
+  const bandH = compact ? 12 : 22;
   const pct = (f: number) => `${f * 100}%`;
   const clamped = value != null ? Math.min(1, Math.max(0, value)) : null;
 
@@ -66,8 +71,11 @@ export function WearDiagram({
 
   return (
     <div className={twMerge(clsx("w-full select-none", className))} role="img" aria-label={label}>
-      {/* The zone band — each zone hatched in its own wear ink, the item's boxed. */}
-      <div className="relative w-full" style={{ height: bandH }}>
+      {/* The zone band — soft tinted fills, the item's zone outlined. */}
+      <div
+        className="relative w-full overflow-hidden rounded-[var(--radius-sm)] bg-[color:var(--color-bg-tertiary)]"
+        style={{ height: bandH }}
+      >
         {EXTERIORS.map((e) => {
           const isItem = e.code === exterior;
           return (
@@ -78,52 +86,49 @@ export function WearDiagram({
               style={{
                 left: pct(e.floatMin),
                 width: pct(e.floatMax - e.floatMin),
-                ["--zone" as string]: ZONE_INK[e.code],
-                opacity: isItem ? 1 : 0.3,
+                ["--zone-fill" as string]: ZONE_FILL[e.code],
+                ["--zone-ink" as string]: ZONE_INK[e.code],
               }}
             />
           );
         })}
 
-        {/* The pointer at an exact float. */}
+        {/* The pointer at an exact float — thick enough to find at a glance. */}
         {clamped != null ? (
           <span
             aria-hidden
-            className="absolute bg-[color:var(--color-primary)]"
-            style={{
-              left: `calc(${pct(clamped)} - 1px)`,
-              width: 2,
-              top: -4,
-              bottom: -4,
-            }}
+            className="absolute inset-y-0 rounded-[2px] bg-[color:var(--color-primary)]"
+            style={{ left: `calc(${pct(clamped)} - 2px)`, width: 4 }}
           />
         ) : null}
       </div>
 
       {/* The axis, with extension ticks at every real zone boundary. */}
-      <div className="relative h-[5px] w-full border-t border-[color:var(--color-blueprint-soft)]">
-        {TICKS.map((f) => (
-          <span
-            key={f}
-            aria-hidden
-            className="absolute top-0 h-[4px] w-px bg-[color:var(--color-blueprint-soft)]"
-            style={{ left: f === 1 ? "calc(100% - 1px)" : pct(f) }}
-          />
-        ))}
-      </div>
+      {!compact ? (
+        <div className="relative mt-1 h-[6px] w-full">
+          {TICKS.map((f) => (
+            <span
+              key={f}
+              aria-hidden
+              className="absolute top-0 h-[5px] w-px bg-[color:var(--color-border-strong)]"
+              style={{ left: f === 1 ? "calc(100% - 1px)" : pct(f) }}
+            />
+          ))}
+        </div>
+      ) : null}
 
-      {/* Zone labels, each centred over its own extent. */}
+      {/* Zone labels — charcoal, 12px, centred over their own extent. */}
       {showLabels ? (
-        <div className="relative mt-[3px] h-[10px] w-full">
+        <div className={clsx("relative w-full", compact ? "mt-1.5 h-[13px]" : "mt-1 h-[14px]")}>
           {EXTERIORS.map((e) => (
             <span
               key={e.code}
               aria-hidden
               className={clsx(
-                "absolute top-0 text-center font-mono text-[8px] font-semibold leading-[10px] tracking-[0.1em]",
+                "absolute top-0 text-center font-mono text-[12px] leading-[13px] tracking-[0.08em]",
                 e.code === exterior
-                  ? "text-[color:var(--color-text-secondary)]"
-                  : "text-[color:var(--color-text-tertiary)] opacity-70",
+                  ? "font-semibold text-[color:var(--color-text)]"
+                  : "font-medium text-[color:var(--color-text-tertiary)]",
               )}
               style={{ left: pct(e.floatMin), width: pct(e.floatMax - e.floatMin) }}
             >
@@ -139,19 +144,19 @@ export function WearDiagram({
 export interface TitleBlockRow {
   label: string;
   value: React.ReactNode;
-  /** Renders the value in the drawing's annotation face. */
+  /** Renders the value in the data face. Defaults to true. */
   mono?: boolean;
   /** Pulls the eye: the price row, the float row. */
   strong?: boolean;
 }
 
 /**
- * The title block — the flagship component of the identity.
+ * The title block — the component the whole identity hangs on.
  *
- * Every sheet in a drawing set carries one: a bordered table of ruled cells in
- * the corner listing what the drawing IS. Here it lists what the skin is —
- * designation, exterior, float, seed, rarity, price — in mono, one fact per
- * ruled row. This is the brand.
+ * Revision B simplifies it into a clean white spec table: one blueprint-blue
+ * header row, thin charcoal-tinted rules between rows, no vertical rules at
+ * all, and generous cell padding so it reads like a spec card rather than a
+ * cramped drawing corner. Labels are 12px mono; values are mono charcoal.
  */
 export function TitleBlock({
   rows,
@@ -160,9 +165,10 @@ export function TitleBlock({
   dense = false,
 }: {
   rows: Array<TitleBlockRow | null | false | undefined>;
-  /** The strip across the head of the block — "SPECIFICATIONS", "ORDER". */
+  /** The header strip — "SPECIFICATIONS", "ORDER". Rendered in blueprint blue. */
   caption?: string;
   className?: string;
+  /** Slightly tighter rows, for a card-sized block. */
   dense?: boolean;
 }) {
   const visible = rows.filter(Boolean) as TitleBlockRow[];
@@ -171,12 +177,15 @@ export function TitleBlock({
   return (
     <div
       className={twMerge(
-        clsx("border border-[color:var(--color-accent)] bg-[color:var(--color-bg-elevated)]", className),
+        clsx(
+          "overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)]",
+          className,
+        ),
       )}
     >
       {caption ? (
-        <div className="border-b border-[color:var(--color-accent)] bg-[color:var(--color-accent-tint)] px-2 py-1">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-accent)]">
+        <div className="bg-[color:var(--color-accent)] px-4 py-2">
+          <span className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[color:var(--color-accent-fg)]">
             {caption}
           </span>
         </div>
@@ -187,26 +196,21 @@ export function TitleBlock({
           <div
             key={r.label}
             className={clsx(
-              "grid grid-cols-[minmax(5.5rem,auto)_1fr] items-baseline",
+              "flex items-baseline justify-between gap-4",
+              dense ? "px-3.5 py-2.5" : "px-4 py-3",
               i < visible.length - 1 && "border-b border-[color:var(--color-border)]",
             )}
           >
-            <dt
-              className={clsx(
-                "border-r border-[color:var(--color-border)] px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-text-tertiary)]",
-                dense ? "py-1" : "py-1.5",
-              )}
-            >
+            <dt className="shrink-0 font-mono text-[12px] font-medium uppercase tracking-[0.12em] text-[color:var(--color-text-tertiary)]">
               {r.label}
             </dt>
             <dd
               className={clsx(
-                "min-w-0 break-words px-2 text-right",
-                dense ? "py-1" : "py-1.5",
-                r.mono === false ? "" : "readout",
+                "min-w-0 break-words text-right",
+                r.mono === false ? "font-sans" : "readout",
                 r.strong
-                  ? "text-[13px] font-semibold text-[color:var(--color-text)]"
-                  : "text-[11.5px] text-[color:var(--color-text)]",
+                  ? "text-[15px] font-semibold text-[color:var(--color-text)]"
+                  : "text-[14px] text-[color:var(--color-text)]",
               )}
             >
               {r.value}

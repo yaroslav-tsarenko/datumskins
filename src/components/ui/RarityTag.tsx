@@ -3,10 +3,12 @@ import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
 /**
- * Rarity is notation here, not lighting: an index chip in the title block and
- * a thin ruled line under the render. The raw Valve hue draws the rule and the
- * chip's index square; the darkened token carries the NAME as type so it stays
- * legible on drafting paper.
+ * Rarity as notation, not lighting.
+ *
+ * Revision B: a small labelled chip — a swatch of the grade's own Valve hue
+ * beside the grade NAME in dark ink — plus a thin coloured rule under the
+ * render. The raw hue only ever appears as a swatch or a rule; the name is
+ * always carried by a darkened token so it passes contrast as type.
  */
 
 const INK: Record<string, string> = {
@@ -20,18 +22,6 @@ const INK: Record<string, string> = {
   "#e4ae39": "var(--rarity-contraband)",
 };
 
-/** Drawing-style index letters, in the CS2 grade order. */
-const INDEX: Record<string, string> = {
-  "Consumer Grade": "A",
-  "Industrial Grade": "B",
-  "Mil-Spec Grade": "C",
-  Restricted: "D",
-  Classified: "E",
-  Covert: "F",
-  Extraordinary: "G",
-  Contraband: "H",
-};
-
 export function rarityInk(raw: string | null | undefined): string {
   if (!raw) return "var(--rarity-consumer)";
   return INK[raw.toLowerCase()] ?? raw;
@@ -42,14 +32,16 @@ export function rarityVars(raw: string | null | undefined): React.CSSProperties 
   return { ["--rarity" as string]: raw || "#b0c3d9" };
 }
 
-/** The thin ruled line under a render that states its grade. */
+/** The thin coloured rule under a render that states its grade. */
 export function RarityRule({ className }: { className?: string }) {
-  return <span aria-hidden className={twMerge(clsx("rarity-rule block h-[2px] w-full", className))} />;
+  return (
+    <span aria-hidden className={twMerge(clsx("rarity-rule block h-[2px] w-full", className))} />
+  );
 }
 
 /**
- * The rarity index chip: a boxed index letter in the grade's own hue, then
- * the grade name. Reads like a legend entry on a drawing.
+ * The rarity chip: a round swatch in the grade's hue, then the grade name in
+ * the darkened grade ink. Small, labelled, legible — no glow, no fill.
  */
 export function RarityTag({
   rarity,
@@ -63,29 +55,27 @@ export function RarityTag({
   showName?: boolean;
 }) {
   if (!rarity) return null;
-  const idx = INDEX[rarity] ?? "—";
   return (
     <span
       className={twMerge(
         clsx(
-          "inline-flex items-stretch border border-[color:var(--color-border)] font-mono text-[10px] font-semibold uppercase leading-none tracking-[0.14em]",
+          "inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] px-2 py-1",
+          "font-mono text-[12px] font-medium uppercase leading-none tracking-[0.1em]",
           className,
         ),
       )}
-      title={`Rarity ${rarity}`}
+      title={showName ? undefined : `Rarity ${rarity}`}
     >
       <span
         aria-hidden
-        className="grid w-[1.4em] place-items-center border-r border-[color:var(--color-border)] py-1 text-[color:var(--color-text-inverse)]"
-        style={{ background: color || "#b0c3d9", color: "#1A1D24" }}
-      >
-        {idx}
-      </span>
+        className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+        style={{ background: color || "#b0c3d9" }}
+      />
       {showName ? (
-        <span className="px-1.5 py-1" style={{ color: rarityInk(color) }}>
-          {rarity}
-        </span>
-      ) : null}
+        <span style={{ color: rarityInk(color) }}>{rarity}</span>
+      ) : (
+        <span className="sr-only">{rarity}</span>
+      )}
     </span>
   );
 }
