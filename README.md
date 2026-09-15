@@ -154,6 +154,29 @@ Company and contact details are env-driven via `NEXT_PUBLIC_*` (see
 > the previously verified domain. Verify `datumskins.com` with the mail provider
 > and update the `from` address.
 
+### Scheduled jobs
+
+`vercel.json` declares **no cron jobs** — a Vercel Hobby account allows at most
+one run per day, and the SIH sync needs to run far more often than that. The
+four endpoints still exist and are unchanged:
+
+| Endpoint | What it does | Suggested cadence |
+| --- | --- | --- |
+| `/api/cron/sih-sync` | Pulls the live catalogue | every 2 min |
+| `/api/cron/sih-poll` | Advances in-flight trade offers | every 1 min |
+| `/api/cron/sih-monitor` | Health/alerting check | hourly |
+| `/api/cron/sih-reconcile` | Reconciles orders against the provider | daily |
+
+Each is protected by `CRON_SECRET` (see `src/lib/cron-auth.ts`), so drive them
+from any external scheduler — cron-job.org, GitHub Actions, an Upstash QStash
+schedule, or a box you already own:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" https://<host>/api/cron/sih-sync
+```
+
+On a Vercel Pro plan you can move them back into `vercel.json` under `"crons"`.
+
 ---
 
 ## Accessibility
