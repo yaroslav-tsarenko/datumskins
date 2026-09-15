@@ -1,0 +1,103 @@
+/*
+ * Blueprint Works motion — an instrument settling, never a bounce.
+ * Everything lands in 140–240ms. The only motions that carry meaning are the
+ * leader line drawing itself in, the stamp being pressed, and a dimension
+ * extending to its extent. Reduced motion is honoured globally in globals.css.
+ */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* A rubber stamp coming down: over-scaled and square, then pressed to its
+   resting angle. */
+@keyframes stampPress {
+  0% { opacity: 0; transform: scale(1.5) rotate(0deg); }
+  55% { opacity: 1; transform: scale(0.94) rotate(-4deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-3deg); }
+}
+@keyframes stampPressRight {
+  0% { opacity: 0; transform: scale(1.5) rotate(0deg); }
+  55% { opacity: 1; transform: scale(0.94) rotate(4deg); }
+  100% { opacity: 1; transform: scale(1) rotate(3deg); }
+}
+
+/* A dimension line extending to its extent. */
+@keyframes dimExtend {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* A leader line drawing itself from the datum out to the annotation. */
+@keyframes leaderDraw {
+  from { stroke-dashoffset: var(--leader-len, 200); }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-fadeIn { animation: fadeIn 0.24s var(--ease-out-expo); }
+.animate-fadeInUp { animation: fadeInUp 0.36s var(--ease-out-expo) both; }
+.animate-fadeInDown { animation: fadeInDown 0.24s var(--ease-out-expo); }
+.animate-slideInRight { animation: slideInRight 0.2s var(--ease-out-expo); }
+.animate-slideInLeft { animation: slideInLeft 0.2s var(--ease-out-expo); }
+.animate-scaleIn { animation: scaleIn 0.2s var(--ease-out-expo); }
+.animate-stamp { animation: stampPress 0.28s var(--ease-out-expo) both; }
+.animate-stamp-right { animation: stampPressRight 0.28s var(--ease-out-expo) both; }
+.animate-dim { animation: dimExtend 0.32s var(--ease-out-expo) both; transform-origin: left center; }
+.animate-leader { animation: leaderDraw 0.36s var(--ease-out-expo) both; }
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+.animate-marquee { animation: marquee 46s linear infinite; }
+
+/* Stagger helpers for sheet grids. */
+[data-stagger="1"] { animation-delay: 0.04s; }
+[data-stagger="2"] { animation-delay: 0.08s; }
+[data-stagger="3"] { animation-delay: 0.12s; }
+[data-stagger="4"] { animation-delay: 0.16s; }
+[data-stagger="5"] { animation-delay: 0.2s; }
+[data-stagger="6"] { animation-delay: 0.24s; }

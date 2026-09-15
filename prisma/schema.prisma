@@ -1,0 +1,621 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Auth ────────────────────────────────────────
+
+model User {
+  id           String    @id @default(cuid())
+  email        String?   @unique
+  passwordHash String?
+  name         String?
+  firstName    String?
+  lastName     String?
+  dateOfBirth  DateTime?
+  avatarUrl    String?
+  role         UserRole  @default(CUSTOMER)
+  phone        String?
+
+  welcomeDiscountUsed    Boolean @default(false)
+  newsletterDiscountUsed Boolean @default(false)
+  newsletterSubscribed   Boolean @default(false)
+
+  addresses           Address[]
+  orders              Order[]
+  reviews             Review[]
+  wishlist            WishlistItem[]
+  passwordResetTokens PasswordResetToken[]
+  newsletter          Newsletter?
+
+  steamAccount SteamAccount?
+  sessions     Session[]
+  sihOrders    SihOrder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ── Steam linking & sessions ─────────────────────
+
+model SteamAccount {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  steamId64   String  @unique
+  personaName String?
+  profileUrl  String?
+  avatar      String?
+  avatarFull  String?
+  // Steam trade offer URL + parsed partner/token for validation
+  tradeUrl         String?
+  tradePartnerId   String?
+  tradeToken       String?
+  tradeUrlVerified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([steamId64])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  userAgent String?
+  ip        String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  SUPER_ADMIN
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName  String
+  lastName   String
+  address1   String
+  address2   String?
+  city       String
+  province   String?
+  postalCode String
+  country    String
+  phone      String?
+  isDefault  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ── Store Settings ───────────────────────────────
+
+model StoreSettings {
+  id              String   @id @default("default")
+  name            String   @default("TradeLock")
+  description     String?
+  logoUrl         String?
+  faviconUrl      String?
+  primaryColor    String   @default("#000000")
+  secondaryColor  String   @default("#ffffff")
+  email           String?
+  phone           String?
+  address         String?
+  currency        String   @default("EUR")
+  taxRate         Decimal  @default(21)
+  freeShippingMin Decimal?
+  metaTitle       String?
+  metaDescription String?
+  facebook        String?
+  instagram       String?
+  tiktok          String?
+
+  updatedAt DateTime @updatedAt
+}
+
+// ── Catalog ──────────────────────────────────────
+
+model Category {
+  id          String            @id @default(cuid())
+  name        String
+  slug        String            @unique
+  description String?
+  imageUrl    String?
+  parentId    String?
+  parent      Category?         @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[]        @relation("SubCategories")
+  sortOrder   Int               @default(0)
+  isActive    Boolean           @default(true)
+  products    ProductCategory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([isActive])
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  name             String
+  slug             String        @unique
+  sku              String        @unique
+  description      String?
+  shortDescription String?
+  price            Decimal
+  comparePrice     Decimal?
+  costPrice        Decimal?
+  trackInventory   Boolean       @default(true)
+  quantity         Int           @default(0)
+  lowStockAlert    Int           @default(5)
+  weight           Decimal?
+  metaTitle        String?
+  metaDescription  String?
+  status           ProductStatus @default(DRAFT)
+  isFeatured       Boolean       @default(false)
+  metadata         Json?
+
+  brand           String?
+  gtin            String?
+  ean             String?
+  mpn             String?
+  googleCategory  String?
+  condition       String  @default("new")
+  characteristics Json?
+
+  images     ProductImage[]
+  categories ProductCategory[]
+  variants   ProductVariant[]
+  orderItems OrderItem[]
+  reviews    Review[]
+  wishlist   WishlistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([isFeatured])
+  @@index([name])
+  @@index([sku])
+  @@index([brand])
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([status, isFeatured])
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  url       String
+  alt       String?
+  sortOrder Int     @default(0)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@index([categoryId])
+}
+
+model ProductVariant {
+  id        String   @id @default(cuid())
+  name      String
+  sku       String   @unique
+  price     Decimal?
+  quantity  Int      @default(0)
+  options   Json
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// ── Orders ───────────────────────────────────────
+
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique @default(cuid())
+  status      OrderStatus @default(PENDING)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  shippingAddress Json
+  shippingMethod  String?
+  shippingCost    Decimal @default(0)
+  trackingNumber  String?
+
+  subtotal        Decimal
+  taxAmount       Decimal
+  discountAmount  Decimal  @default(0)
+  discountCode    String?
+  discountPercent Decimal? @db.Decimal(5, 2)
+  total           Decimal
+
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentMethod String?
+  paymentId     String?
+
+  notes String?
+  items OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  quantity    Int
+  price       Decimal
+  total       Decimal
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName String
+  productSku  String
+  variantName String?
+}
+
+// ── Content ──────────────────────────────────────
+
+model Banner {
+  id           String     @id @default(cuid())
+  type         BannerType @default(HERO)
+  title        String
+  subtitle     String?
+  description  String?
+  imageUrl     String?
+  linkUrl      String?
+  ctaLabel     String?
+  bgColor      String     @default("#1A1A2E")
+  textColor    String     @default("#ffffff")
+  badgeText    String?
+  oldPrice     String?
+  newPrice     String?
+  discountText String?
+  isActive     Boolean    @default(true)
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+enum BannerType {
+  HERO
+  PROMO_SMALL
+  PROMO_WIDE
+  DEAL_CARD
+}
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String
+  logoUrl   String?
+  linkUrl   String?
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HomepageSection {
+  id           String   @id @default(cuid())
+  title        String
+  subtitle     String?
+  slug         String   @unique
+  filterType   String   @default("featured")
+  categorySlug String?
+  maxProducts  Int      @default(5)
+  viewAllUrl   String?
+  viewAllLabel String   @default("View all")
+  bgStyle      String   @default("white")
+  columns      Int      @default(5)
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model HomepageTab {
+  id        String   @id @default(cuid())
+  label     String
+  icon      String?
+  linkUrl   String
+  color     String   @default("#333333")
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UtilityLink {
+  id        String   @id @default(cuid())
+  label     String
+  linkUrl   String
+  icon      String?
+  position  String   @default("left")
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PromoStripItem {
+  id        String   @id @default(cuid())
+  icon      String
+  title     String
+  subtitle  String?
+  linkUrl   String?
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ── Reviews ──────────────────────────────────────
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int
+  comment    String?
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+// ── Wishlist ─────────────────────────────────────
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+// ── Newsletter & Discounts ───────────────────────
+
+model Newsletter {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  userId         String?   @unique
+  user           User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  discountCode   String?   @unique
+  discountUsed   Boolean   @default(false)
+  unsubscribedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ── Import ───────────────────────────────────────
+
+model ImportJob {
+  id        String       @id @default(cuid())
+  fileName  String
+  status    ImportStatus @default(PENDING)
+  totalRows Int          @default(0)
+  processed Int          @default(0)
+  errors    Int          @default(0)
+  errorLog  Json?
+  userId    String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+enum ImportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// ── Product Feed Config ──────────────────────────
+
+model FeedConfig {
+  id            String    @id @default(cuid())
+  type          String
+  name          String
+  isActive      Boolean   @default(false)
+  format        String    @default("xml")
+  lastGenerated DateTime?
+  url           String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// ── SIH Skin Provider ────────────────────────────
+// Real, purchasable CS2 inventory synced from api.sih.market. This is the
+// source of truth for what can actually be bought. One row per
+// market_hash_name.
+model SihItem {
+  marketHashName String  @id @map("market_hash_name")
+  appId          Int     @default(730) @map("app_id")
+  // costPrice = live SIH `price` (what we pay the supplier)
+  costPrice      Decimal @map("cost_price") @db.Decimal(12, 4)
+  // sellPrice = storefront price = max(cost*(1+margin), cost+minMarginAbs)
+  sellPrice      Decimal @map("sell_price") @db.Decimal(12, 4)
+  steamPrice     Decimal? @map("steam_price") @db.Decimal(12, 4)
+  count          Int      @default(0)
+  phase          String?
+  market         String?
+  imageHash      String?  @map("image_hash")
+  rarityColor    String?  @map("rarity_color")
+  isAvailable    Boolean  @default(true) @map("is_available")
+
+  // Derived from market_hash_name at sync time for fast catalog filtering.
+  weapon     String?
+  skinName   String? @map("skin_name")
+  category   String? @default("Other")
+  exterior   String? @default("NA")
+  rarity     String?
+  isStatTrak Boolean @default(false) @map("is_stattrak")
+  isSouvenir Boolean @default(false) @map("is_souvenir")
+
+  syncedAt  DateTime @default(now()) @map("synced_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  orders SihOrder[]
+
+  @@index([isAvailable, costPrice])
+  @@index([isAvailable, category])
+  @@index([isAvailable, weapon])
+  @@index([appId])
+  @@index([marketHashName])
+  @@map("sih_items")
+}
+
+// A real-money purchase. The order id doubles as SIH customId.
+model SihOrder {
+  id             String         @id @default(uuid())
+  userId         String         @map("user_id")
+  user           User           @relation(fields: [userId], references: [id])
+  marketHashName String         @map("market_hash_name")
+  item           SihItem        @relation(fields: [marketHashName], references: [marketHashName])
+
+  // Money
+  shownPrice Decimal @map("shown_price") @db.Decimal(12, 4) // what the user pays
+  costPrice  Decimal @map("cost_price") @db.Decimal(12, 4)  // what we pay SIH
+  margin     Decimal @db.Decimal(12, 4)
+  currency   String  @default("USD")
+
+  status    SihOrderStatus @default(awaiting_payment)
+  sihOrderId String?       @map("sih_order_id")
+  sihStatus  String?       @map("sih_status")
+  sihError   String?       @map("sih_error")
+
+  // Steam delivery target (copied from SteamAccount at purchase time)
+  steamId    String  @map("steam_id")
+  tradeToken String  @map("trade_token")
+
+  // sender.* from SIH order object (trade offer being sent to the buyer)
+  senderOfferId  String?   @map("sender_offer_id")
+  senderNickname String?   @map("sender_nickname")
+  senderAvatar   String?   @map("sender_avatar")
+  senderTimeout  DateTime? @map("sender_timeout")
+
+  // protection.* from SIH order object
+  protectionStatus         String?   @map("protection_status")
+  protectionError          String?   @map("protection_error")
+  protectionRollbackAt     DateTime? @map("protection_rollback_at")
+  protectionRollbackAmount Decimal?  @map("protection_rollback_amount") @db.Decimal(12, 4)
+
+  paymentProviderId String?   @unique @map("payment_provider_id")
+  paidAt            DateTime? @map("paid_at")
+  submittedAt       DateTime? @map("submitted_at")
+  finishedAt        DateTime? @map("finished_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  events SihOrderEvent[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status])
+  @@index([sihOrderId])
+  @@map("sih_orders")
+}
+
+enum SihOrderStatus {
+  awaiting_payment
+  paid
+  submitted
+  processing
+  sent
+  finished
+  failed
+  refund_pending
+  refunded
+  rolled_back
+}
+
+// Append-only audit trail — every status change for every order.
+model SihOrderEvent {
+  id         String   @id @default(cuid())
+  orderId    String   @map("order_id")
+  order      SihOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  source     String // sih_webhook | sih_poll | payment | system
+  fromStatus String?  @map("from_status")
+  toStatus   String?  @map("to_status")
+  payload    Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([orderId, createdAt])
+  @@map("sih_order_events")
+}

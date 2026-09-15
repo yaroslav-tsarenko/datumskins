@@ -1,0 +1,607 @@
+@import "tailwindcss";
+@import "./variables.css";
+@import "./animations.css";
+
+/*
+ * Tailwind v4 — CSS-first config.
+ * Exposes the "Blueprint Works" tokens from variables.css as Tailwind theme
+ * variables so `bg-paper`, `text-ink`, `border-line`, `font-display` and
+ * `font-mono` all resolve from one source of truth. Nothing in a component
+ * hardcodes a colour, a radius or a rule weight.
+ */
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  /* Paper stock */
+  --color-bone: #F6F5F0;
+  --color-paper: #FDFCF8;
+  --color-cream: #EFEDE6;
+  --color-surface: #FDFCF8;
+  --color-cyanotype: #122448;
+
+  /* Ink */
+  --color-ink: #232830;
+  --color-ink-2: #6E7484;
+  --color-ink-3: #9AA0AE;
+  --color-blueprint: #1D3F8F;
+
+  /* Inspection red */
+  --color-primary: #D6382E;
+  --color-primary-strong: #C22C22;
+  --color-primary-hover: #A82219;
+  --color-primary-tint: #FAE0DE;
+  --color-primary-fg: #FFFFFF;
+
+  /* Blueprint ink as the accent */
+  --color-accent: #1D3F8F;
+  --color-accent-hover: #17347A;
+  --color-accent-tint: #E4EAF7;
+  --color-accent-fg: #FFFFFF;
+
+  /* Approval green */
+  --color-teal: #2E8B57;
+  --color-teal-hover: #256F46;
+  --color-teal-tint: #E2F1E8;
+
+  /* Trade-lock amber */
+  --color-gold: #DB9C3B;
+  --color-gold-hover: #C1862B;
+  --color-gold-tint: #FAEEDA;
+  --color-bronze: #DB9C3B;
+  --color-bronze-hover: #C1862B;
+  --color-bronze-tint: #FAEEDA;
+
+  --color-coral: #D6382E;
+  --color-coral-hover: #C22C22;
+  --color-coral-tint: #FAE0DE;
+  --color-violet: #1D3F8F;
+  --color-violet-hover: #17347A;
+  --color-violet-tint: #E4EAF7;
+
+  /* Lines */
+  --color-line: #CBD2E2;
+  --color-line-strong: #8794B4;
+
+  /* Status */
+  --color-success: #2E8B57;
+  --color-success-tint: #E2F1E8;
+  --color-warning: #B57415;
+  --color-warning-tint: #FAEEDA;
+  --color-danger: #C0392F;
+  --color-danger-tint: #FAE0DE;
+
+  /* CS2 rarity */
+  --color-rarity-consumer: #7C8798;
+  --color-rarity-industrial: #3F72B0;
+  --color-rarity-milspec: #3A4FCB;
+  --color-rarity-restricted: #6F33D8;
+  --color-rarity-classified: #B01BC0;
+  --color-rarity-covert: #C4342A;
+  --color-rarity-gold: #B08B0C;
+  --color-rarity-contraband: #A9791F;
+
+  /* Corners — ruled, not rounded */
+  --radius-sm: 0px;
+  --radius-md: 1px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
+  --radius-2xl: 3px;
+
+  --container-content: 1360px;
+
+  /* Type scale */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.22em;
+
+  --text-display: 3.25rem;
+  --text-display--line-height: 1.0;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-editorial: 2.25rem;
+  --text-editorial--line-height: 1.04;
+  --text-editorial--letter-spacing: -0.015em;
+}
+
+/* Drafting (light) is the default identity, so `light:` utilities match the
+   root and `dark:` is the opt-in Night Shift theme. */
+@custom-variant light (&:where(:root, :root *, .light, .light *, [data-theme="light"], [data-theme="light"] *));
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
+/* ── Base layer ──────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+  overflow-anchor: none;
+}
+
+html[data-theme="dark"],
+html.dark {
+  color-scheme: dark;
+}
+
+/* The drafting board: paper stock plus the millimetre grid, minors every
+   step and majors every eight. The grid is part of the surface, not a
+   decoration, so it lives on the body and every band inherits it. */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size:
+    calc(var(--grid-step) * 8) calc(var(--grid-step) * 8),
+    calc(var(--grid-step) * 8) calc(var(--grid-step) * 8),
+    var(--grid-step) var(--grid-step),
+    var(--grid-step) var(--grid-step);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-accent-fg);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* ── Layout helpers ──────────────────────────────────────────────────── */
+
+.section-padding { padding: 3rem 1rem; }
+@media (min-width: 768px) { .section-padding { padding: 4rem 1.5rem; } }
+@media (min-width: 1024px) { .section-padding { padding: 5rem 2rem; } }
+
+.section-container { max-width: var(--max-width); margin: 0 auto; }
+
+/* ── The drawing voice ───────────────────────────────────────────────── */
+
+/* Drawing label — wide-tracked uppercase in blueprint ink. "SECTION A-A",
+   "SPECIFICATIONS", "SHT 04 / REV B". */
+.label,
+.microlabel,
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.microlabel { font-size: 0.625rem; color: var(--color-text-tertiary); }
+
+/* Headings are drawn in blueprint ink, not black. */
+.drawing-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  color: var(--color-accent);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--color-accent);
+}
+
+.section-subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.625rem;
+  max-width: 58ch;
+  line-height: 1.65;
+}
+
+/* Every number on this site is an annotation: mono, tabular, tight. */
+.readout,
+.spec-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+/* ── Sheet furniture ─────────────────────────────────────────────────── */
+
+/* The sheet: bright paper inside a blueprint rule. Featured sheets take a
+   double rule, drawn with an outline rather than a second element. */
+.sheet,
+.panel {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+.sheet-featured {
+  border: 1px solid var(--color-accent);
+  outline: 1px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Corner registration marks — four crop corners drawn in blueprint ink. */
+.reg-marks { position: relative; }
+.reg-marks::before,
+.reg-marks::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--color-blueprint-soft);
+  pointer-events: none;
+}
+.reg-marks::before { top: 5px; left: 5px; border-right: 0; border-bottom: 0; }
+.reg-marks::after { bottom: 5px; right: 5px; border-left: 0; border-top: 0; }
+
+/* The cyanotype band — a plate printed the classic way round. Pins the token
+   set so the band renders identically in both themes. */
+.cyanotype {
+  --color-bg: #122448;
+  --color-bg-elevated: #16294F;
+  --color-bg-secondary: #0F1F3F;
+  --color-bg-tertiary: #0C1A36;
+  --color-text: #D9E6FF;
+  --color-text-secondary: #93A6CC;
+  --color-text-tertiary: #8DA2CC;
+  --color-text-inverse: #122448;
+  --color-border: #27406E;
+  --color-border-strong: #4A6AA6;
+  --color-accent: #8FB4FF;
+  --color-accent-tint: rgba(143, 180, 255, 0.16);
+  --color-accent-fg: #0B1834;
+  --color-blueprint: #8FB4FF;
+  --color-blueprint-soft: #5C7FC4;
+  --color-primary: #F0574B;
+  --color-primary-strong: #E2483C;
+  --color-primary-hover: #F5786E;
+  --color-primary-fg: #FFFFFF;
+  --color-primary-tint: rgba(240, 87, 75, 0.16);
+  --color-success: #4FB27C;
+  --color-warning: #E4B25C;
+  --color-gold: #E4B25C;
+  --grid-minor: rgba(217, 230, 255, 0.05);
+  --grid-major: rgba(217, 230, 255, 0.085);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size:
+    calc(var(--grid-step) * 8) calc(var(--grid-step) * 8),
+    calc(var(--grid-step) * 8) calc(var(--grid-step) * 8),
+    var(--grid-step) var(--grid-step),
+    var(--grid-step) var(--grid-step);
+}
+
+/* A patch of paper that carries the grid on its own (cards, render stages). */
+.gridded {
+  background-image:
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size: var(--grid-step) var(--grid-step);
+}
+
+/* Hatching — 45° section lines. Empty states and inactive zones. */
+.hatch {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--color-blueprint-soft) 0,
+    var(--color-blueprint-soft) 1px,
+    transparent 1px,
+    transparent 7px
+  );
+  opacity: 0.35;
+}
+
+/* ── Dimension lines ─────────────────────────────────────────────────── */
+
+/* A ruled extent with tick ends — used under headings and beside values. */
+.dim-line {
+  position: relative;
+  height: 1px;
+  background: var(--color-blueprint-soft);
+}
+.dim-line::before,
+.dim-line::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: var(--color-blueprint-soft);
+}
+.dim-line::before { left: 0; }
+.dim-line::after { right: 0; }
+
+/* A word under dimension — this identity's marker move. Where a louder brand
+   would highlight a word, a drawing dimensions it: the word in inspection red
+   with a ticked extent ruled beneath. Built from one pseudo-element so the
+   rule and both tick ends survive any line wrap of the heading around it. */
+.dim-word {
+  position: relative;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+.dim-word::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.17em;
+  height: 7px;
+  pointer-events: none;
+  background:
+    linear-gradient(currentColor, currentColor) left bottom / 1px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 1px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat;
+}
+
+/* A wear zone on the diagram: 45° section hatching in the zone's own ink,
+   boxed when it is the item's own zone. Drawn in CSS so the hatch keeps its
+   angle at any width. */
+.wear-zone {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--zone) 0,
+    var(--zone) 1.4px,
+    transparent 1.4px,
+    transparent 5px
+  );
+}
+.wear-zone-active { box-shadow: inset 0 0 0 1px var(--zone); }
+
+/* The wear gauge input: a neutral ruled track with a square inspection-red
+   pointer. The colour lives in the diagram above it, never in the track. */
+.spec-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--color-border-strong);
+  height: 1px;
+}
+.spec-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+  width: 3px;
+  border-radius: 0;
+  background: var(--color-primary);
+  border: 0;
+  cursor: ew-resize;
+}
+.spec-slider::-moz-range-thumb {
+  height: 16px;
+  width: 3px;
+  border-radius: 0;
+  background: var(--color-primary);
+  border: 0;
+  cursor: ew-resize;
+}
+
+/* A leader line: a dot at the datum, a rule out to the annotation. On hover
+   the parent draws it in. */
+.leader {
+  stroke: var(--color-blueprint-soft);
+  stroke-width: 1;
+  stroke-dasharray: var(--leader-len, 200);
+  stroke-dashoffset: var(--leader-len, 200);
+  transition: stroke-dashoffset 320ms var(--ease-out-expo);
+}
+.group:hover .leader,
+.leader-shown { stroke-dashoffset: 0; }
+
+/* ── Stamps ──────────────────────────────────────────────────────────── */
+
+/* A rubber stamp: double rule, wide tracking, rotated a few degrees, with
+   the edge knocked slightly out of true so it reads as pressed by hand. */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.28em 0.5em 0.24em;
+  border: 1.5px solid currentColor;
+  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 22%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-bg-elevated) 82%, transparent);
+}
+.stamp-approve { color: var(--color-teal); }
+.stamp-hold { color: var(--color-gold); }
+.stamp-ink { color: var(--color-accent); }
+.stamp-right { transform: rotate(3deg); }
+.stamp-flat { transform: none; }
+
+/* ── Inputs ──────────────────────────────────────────────────────────── */
+
+.well {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  transition: border-color 140ms var(--ease-out-expo), box-shadow 140ms var(--ease-out-expo);
+}
+.well:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-tint);
+}
+
+/* Keyboard focus — an inspection-red bracket. Name kept from the previous
+   identity so no call site has to change. */
+.focus-amber:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-primary);
+}
+
+/* A sheet lifting off the board: 2px, no blur bloom. */
+.card-lift {
+  transition: transform var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) var(--ease-out-expo);
+}
+@media (hover: hover) {
+  .card-lift:hover {
+    transform: translate3d(-1px, -2px, 0);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+/* ── Rarity — an index chip plus a ruled line under the render ────────── */
+
+.rarity-rule { background: var(--rarity, var(--rarity-consumer-raw)); }
+.rarity-spine { background: var(--rarity, var(--rarity-consumer-raw)); }
+.rarity-strip { background: var(--rarity, var(--rarity-consumer-raw)); }
+
+/* ── Sitewide voice adapters ─────────────────────────────────────────── */
+
+/* Surfaces that were not individually art-directed still speak the language:
+   the display face draws in blueprint ink, and nothing is a pill. */
+.font-display,
+.font-serif {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+.rounded-full { border-radius: var(--radius-lg); }
+
+/* ── Legacy shims from the previous identities ───────────────────────── */
+.glass,
+.glass-strong {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.glass-border { border: 1px solid var(--color-border); }
+.metal-stroke,
+.gold-stroke,
+.amber-stroke {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+}
+.grain::before { content: none; }
+.reticle::before,
+.reticle::after { content: none; }
+.glow-amber, .glow-azure, .glow-violet, .glow-gold { box-shadow: var(--shadow-card); }
+.gradient-text { color: var(--color-accent); background: none; }
+.heat-plate { background: var(--color-primary); color: #FFFFFF; padding-inline: 0.1em; }
+.poster { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
+.warm-dots, .retail-dots, .tech-grid, .concrete {
+  background-image:
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size: var(--grid-step) var(--grid-step);
+}
+.tape-rule { height: 1px; background: var(--color-accent); border: 0; }
+.tape-rule-black { height: 1px; background: var(--color-text); border: 0; }
+.index-num {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-blueprint-soft);
+  font-variant-numeric: tabular-nums;
+}
+.sticker { display: inline-flex; }
+.ticker-track { display: inline-flex; min-width: 200%; animation: marquee 46s linear infinite; }
+.ticker:hover .ticker-track,
+.ticker:focus-within .ticker-track { animation-play-state: paused; }
+
+/* ── Wear diagram ────────────────────────────────────────────────────── */
+.wear-bar { background: var(--gradient-wear); }
+.wear-slider { background: var(--gradient-wear); }
+.wear-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  width: 6px;
+  border-radius: 0;
+  background: var(--color-primary);
+  border: 0;
+  cursor: ew-resize;
+}
+.wear-slider::-moz-range-thumb {
+  height: 18px;
+  width: 6px;
+  border-radius: 0;
+  background: var(--color-primary);
+  border: 0;
+  cursor: ew-resize;
+}
+
+/* ── Skeletons — an unprinted sheet ──────────────────────────────────── */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg-tertiary);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent);
+  animation: skeleton-shimmer 1.5s infinite;
+}
+@keyframes skeleton-shimmer { 100% { transform: translateX(100%); } }
+
+.editorial-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+}
+
+.bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
+.bento > .col-2 { grid-column: span 2; }
+.bento > .row-2 { grid-row: span 2; }
+@media (max-width: 900px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .bento { grid-template-columns: 1fr; } .bento > .col-2 { grid-column: span 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card-lift:hover { transform: none; }
+  .ticker-track { animation: none; }
+  .leader { stroke-dashoffset: 0; }
+}
