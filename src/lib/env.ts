@@ -22,10 +22,13 @@ const num = (def: number) =>
 
 const schema = z.object({
   // ── SIH ──────────────────────────────────────────
-  SIH_API_KEY: z.string().min(1, "SIH_API_KEY is required"),
+  // Secrets are optional at parse time so pages that only read pricing knobs
+  // (and static prerendering at build time) don't need them. Code that actually
+  // uses a secret must go through `requireSecret`, which fails closed.
+  SIH_API_KEY: z.string().optional(),
   SIH_API_BASE: z.string().url().default("https://api.sih.market/api/v1"),
   SIH_APP_ID: num(730),
-  SIH_WEBHOOK_SECRET: z.string().min(1, "SIH_WEBHOOK_SECRET is required"),
+  SIH_WEBHOOK_SECRET: z.string().optional(),
   SIH_TEST_MODE: bool(false),
   SIH_PRICE_TOLERANCE: num(0.03),
   SIH_MARGIN: num(0.07),
@@ -34,7 +37,7 @@ const schema = z.object({
   SIH_LOW_BALANCE_THRESHOLD: num(100),
 
   // ── Cron / app ───────────────────────────────────
-  CRON_SECRET: z.string().min(1, "CRON_SECRET is required"),
+  CRON_SECRET: z.string().optional(),
   APP_URL: z.string().url(),
 
   // ── Telegram alerts (optional) ───────────────────
@@ -68,3 +71,12 @@ export const env: Env = new Proxy({} as Env, {
     return getEnv()[prop as keyof Env];
   },
 });
+
+type SecretName = "SIH_API_KEY" | "SIH_WEBHOOK_SECRET" | "CRON_SECRET";
+
+// Read a secret at the point of use; throws if it is missing or empty.
+export function requireSecret(name: SecretName): string {
+  const v = getEnv()[name];
+  if (!v) throw new Error(`Invalid environment configuration:\n  - ${name} is required`);
+  return v;
+}

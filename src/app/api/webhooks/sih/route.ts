@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
-import { env } from "@/lib/env";
+import { requireSecret } from "@/lib/env";
 import { sihClient } from "@/lib/sih/client";
 import { sihOrderObjectSchema } from "@/lib/sih/types";
 import { applySihOrderObject, logSihEvent } from "@/lib/sih/orders";
@@ -19,7 +19,7 @@ export const runtime = "nodejs";
 // backstop.
 
 function authorized(req: Request, rawBody: string): boolean {
-  const secret = env.SIH_WEBHOOK_SECRET;
+  const secret = requireSecret("SIH_WEBHOOK_SECRET");
   const url = new URL(req.url);
   if (url.searchParams.get("secret") === secret) return true;
 

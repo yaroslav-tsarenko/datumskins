@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { sihClient } from "@/lib/sih/client";
-import { env } from "@/lib/env";
+import { env, requireSecret } from "@/lib/env";
 
 // Register (or clear) the SIH order-status webhook.
 //
@@ -24,7 +24,7 @@ async function main() {
   const base = (env.APP_URL || "").replace(/\/$/, "");
   const url =
     arg ||
-    `${base}/api/webhooks/sih?secret=${encodeURIComponent(env.SIH_WEBHOOK_SECRET)}`;
+    `${base}/api/webhooks/sih?secret=${encodeURIComponent(requireSecret("SIH_WEBHOOK_SECRET"))}`;
 
   if (!/^https?:\/\//.test(url)) {
     throw new Error(`Refusing to set a non-absolute webhook URL: ${url}`);

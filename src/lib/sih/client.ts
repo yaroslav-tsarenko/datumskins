@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { env } from "@/lib/env";
+import { env, requireSecret } from "@/lib/env";
 import { SihError, mapSihError } from "./errors";
 import {
   sihProjectSchema,
@@ -73,7 +73,7 @@ async function rawRequest(
         method,
         headers: {
           // apikey auth — do not log this object.
-          apikey: env.SIH_API_KEY,
+          apikey: requireSecret("SIH_API_KEY"),
           Accept: "application/json",
           ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
         },
